@@ -13,8 +13,8 @@ def test():
 def draw_histogram():
     fig,axes = plt.subplots(2,1)
     data = pd.Series(np.random.randn(17),index=list('abcdefghijklmnopq'))
-    data.plot(kind='bar',ax=axes[0],color='k',alpha=0.7)
-    data.plot(kind='barh',ax=axes[1],color='k',alpha=0.7)
+    data.plot(kind='bar',ax=axes[0],color='red',alpha=0.7)
+    data.plot(kind='barh',ax=axes[1],color='blue',alpha=0.7)
     plt.show()
     return
 

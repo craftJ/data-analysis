@@ -4,6 +4,7 @@ import pandas as pd
 from pandas import Series,DataFrame
 import inspect
 import sys
+import seaborn as sns
 
 def dbg_caller():
     # 获取调用者的帧信息
@@ -18,10 +19,43 @@ def test():
     sa = pd.Series([1, 2, 3], index=list('abc'))
     print(sa)
 
-def show(plt,secs):
-    plt.show(block=False)
-    plt.pause(secs)
-    plt.close()
+def show(plt,secs=None):
+    if secs is not None:
+        plt.show(block=False)
+        plt.pause(secs)
+        plt.close()
+    else:
+        plt.show()
+    return
+
+#热力图
+def draw_heatmap():
+    arry_size = 20
+    # 自定义数据及坐标轴
+    values = np.random.uniform(0, 1000, size=(arry_size, arry_size))
+
+    # 使用列表推导式生成x轴和y轴的定义
+    x_prefix = "name-"
+    y_prefix = "vaule-"
+    x_ticks = [f"{x_prefix}{i+1}" for i in range(arry_size)]
+    y_ticks = [f"{y_prefix}{i+1}" for i in range(arry_size)]
+    
+    # 绘制热力图，设置标题及坐标名称
+    #viridis：从深蓝到黄绿色的渐变。
+    #plasma：从深红到黄色的渐变。
+    #inferno：从黑色到红色的渐变。
+    #magma：从黑色到橙色的渐变。
+    #cividis：从深蓝到黄色的渐变。
+    #coolwarm：从蓝色到红色的渐变，中间为白色。
+    #RdBu：从红色到蓝色的渐变。
+    #Blues：从浅蓝到深蓝的渐变。
+    #Reds：从浅红到深红的渐变
+    #_r后缀:表示颜色和值反向映射
+    ax = sns.heatmap(values, xticklabels=x_ticks, yticklabels=y_ticks, cmap="Blues")
+    ax.set_title('Heatmap') 
+    ax.set_xlabel('x label') 
+    ax.set_ylabel('y label')
+    show(plt,2)
     return
 
 #直方图
@@ -66,9 +100,10 @@ def draw_curve():
 
 def main():
     #draw_curve()
-    draw_histogram()
-    draw_hist()
-    draw_bar()
+    #draw_histogram()
+    #draw_hist()
+    #draw_bar()
+    draw_heatmap()
     #test()
     return
 

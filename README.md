@@ -71,7 +71,8 @@
 - [sql join](https://learnsql.com/blog/sql-join-cheat-sheet/joins-cheat-sheet-a4.pdf)
 - [统计学讲义](https://www.math.pku.edu.cn/teachers/lidf/course/probstathsy/probstathsy.pdf)
 - [箱线图介绍](https://www.stat.cmu.edu/~hseltman/309/Book/chapter4.pdf)
-- 
+- [核函数](https://geekdaxue.co/read/myheros@tbcnzy/gl6ubi#eimgx7)
+  
 
 
 

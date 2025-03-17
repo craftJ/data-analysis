@@ -29,6 +29,15 @@ def show(plt,secs=None):
         plt.show()
     return
 
+#箱线图
+def draw_boxplot():
+    x = np.random.randn(1000)
+    y = np.random.randn(500)
+    z = np.random.randn(1500)
+    plt.boxplot((x, y, z), labels=('x', 'y', 'z'),patch_artist=True,showmeans=True,)
+    show(plt)
+    return
+
 #热力图
 def draw_heatmap():
     arry_size = 20
@@ -125,11 +134,12 @@ def draw_curve(funtype):
     return
 
 def main():
-    draw_curve("helix")
+    #draw_curve("helix")
     #draw_histogram()
     #draw_hist()
     #draw_bar()
     #draw_heatmap()
+    draw_boxplot()
     #test()
     return
 

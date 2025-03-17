@@ -29,6 +29,19 @@ def show(plt,secs=None):
         plt.show()
     return
 
+def draw_guss():
+    # 示例数据
+    data = sns.load_dataset('iris')
+
+    # 绘制核密度估计图
+    plt.figure(figsize=(10, 6))
+    sns.kdeplot(data=data['sepal_length'], fill=True, color='blue', bw_adjust=0.5)
+    plt.title('Kernel Density Estimate of Sepal Length (Gaussian Kernel)')
+    plt.xlabel('Sepal Length')
+    plt.ylabel('Density')
+    plt.show()
+    return
+
 #箱线图
 def draw_boxplot():
     x = np.random.randn(1000)
@@ -139,7 +152,8 @@ def main():
     #draw_hist()
     #draw_bar()
     #draw_heatmap()
-    draw_boxplot()
+    #draw_boxplot()
+    draw_guss()
     #test()
     return
 

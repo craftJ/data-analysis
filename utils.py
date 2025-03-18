@@ -6,6 +6,7 @@ import inspect
 import sys
 import seaborn as sns
 from mpl_toolkits.mplot3d import Axes3D
+from scipy.stats import norm
 
 def dbg_caller():
     # 获取调用者的帧信息
@@ -15,11 +16,6 @@ def dbg_caller():
     print(f"func:{caller_function_name}, line:{caller_line_number}")
     return
 
-def test():
-    #单层索引
-    sa = pd.Series([1, 2, 3], index=list('abc'))
-    print(sa)
-
 def show(plt,secs=None):
     if secs is not None:
         plt.show(block=False)
@@ -27,19 +23,6 @@ def show(plt,secs=None):
         plt.close()
     else:
         plt.show()
-    return
-
-def draw_guss():
-    # 示例数据
-    data = sns.load_dataset('iris')
-
-    # 绘制核密度估计图
-    plt.figure(figsize=(10, 6))
-    sns.kdeplot(data=data['sepal_length'], fill=True, color='blue', bw_adjust=0.5)
-    plt.title('Kernel Density Estimate of Sepal Length (Gaussian Kernel)')
-    plt.xlabel('Sepal Length')
-    plt.ylabel('Density')
-    plt.show()
     return
 
 #箱线图
@@ -146,6 +129,20 @@ def draw_curve(funtype):
         print("Unknown function!!")
     return
 
+#Kernel Density Estimation
+def draw_kde():
+    #随机样本点
+    dataset = np.array([10,2,-2,22,1,3,6,19,7,3,16,5,12,0])
+    fig, ax = plt.subplots(figsize=(10, 4))
+    #绘制kde
+    sns.kdeplot(ax=ax, data=dataset, bw_adjust=0.3)
+    #标注样本点位置及注解
+    ax.plot(dataset, np.zeros_like(dataset)+0.05, 's', markersize=8, color='black')
+    for index, x in enumerate(dataset):
+        ax.annotate(r'$x_{}$'.format(index + 1), xy=[x, 0.04], horizontalalignment='center', fontsize=12)
+    plt.show()
+    return
+
 def main():
     #draw_curve("helix")
     #draw_histogram()
@@ -153,8 +150,7 @@ def main():
     #draw_bar()
     #draw_heatmap()
     #draw_boxplot()
-    draw_guss()
-    #test()
+    draw_kde()
     return
 
 if __name__ == '__main__':

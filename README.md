@@ -32,9 +32,7 @@
 - 概率密度/概率
     >概率密度函数（Probability Density Function, PDF）的值本身不是概率，而是概率的密度。这意味着在连续随机变量的情况下，PDF 的值表示在某个特定值附近的单位长度内的概率。
     概率P和概率密度f(x)的关系就是: 
-    $$
-    P(a \leq X \leq b) = \int_a^bf(x)\,dx
-    $$
+    $$P(a \leq X \leq b) = \int_a^bf(x)\,dx$$
 
 - 核密度估计（Kernel Density Estimation, KDE）
     >由给定样本集合求解随机变量的分布密度函数问题是概率统计学的基本问题之一。

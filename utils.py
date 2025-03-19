@@ -7,6 +7,10 @@ import sys
 import seaborn as sns
 from mpl_toolkits.mplot3d import Axes3D
 from scipy.stats import norm
+import os
+
+rawdata_path = "./dataset"
+
 
 def dbg_caller():
     # 获取调用者的帧信息
@@ -143,6 +147,41 @@ def draw_kde():
     plt.show()
     return
 
+#小提琴图
+def draw_violinplot():
+    #原始数据读取
+    data_path = rawdata_path
+    file_name = r"online-shopping.xlsx"
+    file_path = os.path.join(data_path, file_name)
+    data_read = pd.read_excel(file_path)
+    #设置绘图风格,支持中文
+    plt.style.use('ggplot')
+    plt.rcParams['font.sans-serif'] = ['Microsoft YaHei']
+    #坐标轴负号的处理
+    plt.rcParams['axes.unicode_minus']=False
+    # 绘制分组小提琴图
+    sns.violinplot(
+                x = "website store", # 指定x轴的数据
+                #x = 'name',
+                y = "total amount", # 指定y轴的数据
+                hue = "sex", # 指定分组变量
+                data = data_read, # 指定绘图的数据集
+                #order = ['7','8','9','10','11','12'], # 指定x轴刻度标签的顺序
+                order = ['pdd','jingdong','taobao'],
+                #order = ['lisa','joe','tom','jerry','james'],
+                density_norm='count',#
+                split = True, # 将小提琴图从中间割裂开，形成不同的密度曲线；
+                palette = 'RdBu' # 指定不同性别对应的颜色（因为hue参数为设置为性别变量）
+                )
+    # 添加图形标题
+    plt.title('每月消费情况')
+    # 设置图例
+    plt.legend(loc = 'upper left', ncol = 2)
+    # 显示图形
+    plt.show()
+    return
+
+
 def main():
     #draw_curve("helix")
     #draw_histogram()
@@ -150,7 +189,8 @@ def main():
     #draw_bar()
     #draw_heatmap()
     #draw_boxplot()
-    draw_kde()
+    #draw_kde()
+    draw_violinplot()
     return
 
 if __name__ == '__main__':

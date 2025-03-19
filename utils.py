@@ -11,7 +11,6 @@ import os
 
 rawdata_path = "./dataset"
 
-
 def dbg_caller():
     # 获取调用者的帧信息
     frame = sys._getframe(1)  # 1 表示调用栈的上一层
@@ -151,7 +150,7 @@ def draw_kde():
 def draw_violinplot():
     #原始数据读取
     data_path = rawdata_path
-    file_name = r"online-shopping.xlsx"
+    file_name = r"tiger-data/online-shopping.xlsx"
     file_path = os.path.join(data_path, file_name)
     data_read = pd.read_excel(file_path)
     #设置绘图风格,支持中文
@@ -181,6 +180,45 @@ def draw_violinplot():
     plt.show()
     return
 
+#散点矩阵图
+def draw_scatter_matrix(): 
+    # 创建示例数据
+    if 0:
+        data = {
+            'A': [10, 5, 8, 2, 2,15,11,10,13,1],
+            'B': [5, 4, 3, 2, 1,2,3,4,5,7],
+            'C': [2, 3, 4, 5, 6,3,4,5,6,7],
+            'D': [6, 2, 4, 3, 2,3,2,1,4,6],
+        }
+        df = pd.DataFrame(data)
+        print(df)
+    else:
+        #采用本地seaborn数据集
+        df = pd.read_csv("./dataset/seaborn-data/penguins.csv")
+        df = df.iloc[:,0:4]
+        print(df)
+
+    if 1:
+        # 使用 seaborn 绘制散点矩阵图,对角线显示核密度估计
+        #kind：用于控制非对角线上的图的类型，可选"scatter"与"reg",对应散点，拟合回归线
+        #diag_kind：控制对角线上的图的类型，可选"hist"与"kde"，对应直方图，概率密度估计
+        '''
+        sns.pairplot(df, diag_kind='kde',kind='reg')
+        sns.pairplot(df, diag_kind='kde',kind='scatter')
+        sns.pairplot(df, diag_kind='hist',kind='reg')
+        '''
+        sns.pairplot(df, diag_kind='hist',kind='scatter',hue="species")
+        show(plt)
+    else:
+        # 使用 pandas 绘制散点矩阵图作为比较，
+        # 跟想象的不一样，不同的库绘制出来的视觉效果还是比较大的，
+        # 并且这里的直方图同seaborn的有较大差异
+        '''
+        pd.plotting.scatter_matrix(df, diagonal='kde')
+        '''
+        pd.plotting.scatter_matrix(df, diagonal='hist')
+        show(plt)
+    return
 
 def main():
     #draw_curve("helix")
@@ -190,7 +228,8 @@ def main():
     #draw_heatmap()
     #draw_boxplot()
     #draw_kde()
-    draw_violinplot()
+    #draw_violinplot()
+    draw_scatter_matrix()
     return
 
 if __name__ == '__main__':

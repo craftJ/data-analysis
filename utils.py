@@ -50,15 +50,15 @@ def draw_heatmap():
     y_ticks = [f"{y_prefix}{i+1}" for i in range(arry_size)]
     
     # 绘制热力图，设置标题及坐标名称
-    #viridis：从深蓝到黄绿色的渐变。
-    #plasma：从深红到黄色的渐变。
-    #inferno：从黑色到红色的渐变。
-    #magma：从黑色到橙色的渐变。
-    #cividis：从深蓝到黄色的渐变。
-    #coolwarm：从蓝色到红色的渐变，中间为白色。
-    #RdBu：从红色到蓝色的渐变。
-    #Blues：从浅蓝到深蓝的渐变。
-    #Reds：从浅红到深红的渐变
+    #viridis:从深蓝到黄绿色的渐变。
+    #plasma:从深红到黄色的渐变。
+    #inferno:从黑色到红色的渐变。
+    #magma:从黑色到橙色的渐变。
+    #cividis:从深蓝到黄色的渐变。
+    #coolwarm:从蓝色到红色的渐变，中间为白色。
+    #RdBu:从红色到蓝色的渐变。
+    #Blues:从浅蓝到深蓝的渐变。
+    #Reds:从浅红到深红的渐变
     #_r后缀:表示颜色和值反向映射
     ax = sns.heatmap(values, xticklabels=x_ticks, yticklabels=y_ticks, cmap="Blues")
     ax.set_title('Heatmap') 
@@ -201,8 +201,8 @@ def draw_scatter_matrix():
 
     if 1:
         # 使用 seaborn 绘制散点矩阵图,对角线显示核密度估计
-        #kind：用于控制非对角线上的图的类型，可选"scatter"与"reg",对应散点，拟合回归线
-        #diag_kind：控制对角线上的图的类型，可选"hist"与"kde"，对应直方图，概率密度估计
+        #kind:用于控制非对角线上的图的类型，可选"scatter"与"reg",对应散点，拟合回归线
+        #diag_kind:控制对角线上的图的类型，可选"hist"与"kde"，对应直方图，概率密度估计
         '''
         sns.pairplot(df, diag_kind='kde',kind='reg')
         sns.pairplot(df, diag_kind='kde',kind='scatter')
@@ -229,6 +229,116 @@ def draw_hexbin():
     show(plt)
     return
 
+#饼图
+def draw_pie():
+    #mode == 1: 简单饼图
+    #mode == 2：嵌套饼图（使用bar，极坐标系方式绘制叠加）
+    #mode == 3：嵌套饼图（使用pie绘制叠加）
+    mode = 3
+    if mode == 1:
+        fig, ax = plt.subplots(figsize=(6, 3), subplot_kw=dict(aspect="equal"))
+        recipe = ["375 g flour",
+                "75 g sugar",
+                "250 g butter",
+                "300 g berries"]
+        data = [float(x.split()[0]) for x in recipe]
+        ingredients = [x.split()[-1] for x in recipe]
+        def func(pct, allvals):
+            absolute = int(np.round(pct/100.*np.sum(allvals)))
+            return f"{pct:.1f}%\n({absolute:d} g)"
+        wedges, texts, autotexts = ax.pie(data, autopct=lambda pct: func(pct, data),
+                                        textprops=dict(color="w"))
+        ax.legend(wedges, ingredients,
+                title="Ingredients",
+                loc="center left",
+                bbox_to_anchor=(1, 0, 0.5, 1))
+        
+        plt.setp(autotexts, size=8, weight="bold")
+        
+        ax.set_title("Matplotlib bakery: A pie")
+
+        plt.show()
+    elif mode == 2:
+        #嵌套饼图采用polar极坐标系
+        fig, ax = plt.subplots(subplot_kw=dict(projection="polar"))
+        size = 0.3
+        vals = np.array([[60., 32.,10.], [37., 40.,33.], [29., 10.,54.]])
+        print(vals,"\n")    
+        # 数值归一化为弧度
+        valsnorm = vals/np.sum(vals)*2*np.pi
+        print(valsnorm,"\n")
+        # Obtain the ordinates of the bar edges
+        # 在极坐标系下，条形图的“ordinates”（纵坐标）实际上是指条形的半径边界值。
+        # 注意！！这里使用flatten转换后再cumsum不断累加，达到了不同分类占用弧度的不断累加，方便得到每个大类的开始弧度位置
+        valsleft = np.cumsum(np.append(0, valsnorm.flatten()[:-1])).reshape(vals.shape)
+        print(valsleft,"\n")
+
+        #饼图颜色映射
+        cmap = plt.colormaps["tab20c"]
+        #大类颜色，0,4,8
+        outer_colors = cmap(np.arange(3)*4)
+        #子类颜色，分布在大类区间范围，可以使同类色系一致
+        inner_colors = cmap([1, 2, 3, 5, 6, 7, 9, 10,11])
+        
+        #极坐标/直角坐标系情况下，参数含义分别如下:
+        #x:条形图的起始角度（以弧度为单位）  / X轴起始位置
+        #width:条形图的宽度（以弧度为单位） / 条形图宽度
+        #bottom:条形图的起始半径。         / 条形图底部位置
+        #height:条形图的高度（即半径的增量）/ 条形图高度
+        #color:条形图的填充颜色 / 同
+        #edgecolor:条形图边框的颜色 /同
+        #linewidth:条形图边框的宽度/ 同
+        #align:条形图的对齐方式。/同
+        # 取valsleft第一列，绘制最外圈的大分类，宽度为valsnorm中每行相加，实际就是子类的弧度相加
+        ax.bar(x=valsleft[:, 0],
+            width=valsnorm.sum(axis=1), bottom=1-size, height=size,
+            color=outer_colors, edgecolor='w', linewidth=1, align="edge")
+
+        # 取valsleft所有元素，按照行优先二维转一维，绘制所有子类占比，宽度为子类各自的归一化弧度
+        ax.bar(x=valsleft.flatten(),
+            width=valsnorm.flatten(), bottom=1-2*size, height=size,
+            color=inner_colors, edgecolor='w', linewidth=1, align="edge")
+
+        ax.set(title="nested pie chart")
+
+        #关闭当前坐标轴（axes）的所有轴线（包括刻度、标签和边框）
+        ax.set_axis_off()
+        plt.show()
+    elif mode == 3:
+        # 内层数据
+        inner_x = [200, 101, 94, 180]
+        inner_labels = ['中', '美', '俄', '德']
+
+        # 外层数据
+        outer_x = [120, 80, 26, 75, 26, 68, 89, 91]
+        outer_labels = ['纺织品', '稀土', '大豆', '芯片', '天然气', '武器', '电子', '汽车']
+
+        plt.figure(figsize=(10, 10))
+        #设置绘图风格,支持中文
+        plt.style.use('ggplot')
+        plt.rcParams['font.sans-serif'] = ['Microsoft YaHei']
+        # 绘制内层饼图
+        plt.pie(inner_x,
+        labels=inner_labels,
+        radius=0.5,
+        autopct=lambda pct: int(pct / 100 * sum(inner_x)),
+        labeldistance=0.25,
+        colors=['#d0fefe', '#cb416b', '#0cff0c', 'grey'],
+        wedgeprops=dict(width=0.5, edgecolor='white'))
+
+        # 绘制外层饼图
+        plt.pie(outer_x,
+        labels=outer_labels,
+        radius=1,
+        labeldistance=0.75,
+        autopct=lambda pct: int(pct / 100 * sum(outer_x)),
+        colors=['#95d0fc', '#a2cffe', '#ff796c', '#ff028d',
+        '#c7fdb5', '#aaff32', '#b9a281', '#d8dcd6'],
+        wedgeprops=dict(width=0.5, edgecolor='white'))
+        plt.legend(inner_labels, fontsize=15)
+        plt.show()
+    return
+
 def main():
     #draw_curve("helix")
     #draw_histogram()
@@ -239,7 +349,8 @@ def main():
     #draw_kde()
     #draw_violinplot()
     #draw_scatter_matrix()
-    draw_hexbin()
+    #draw_hexbin()
+    draw_pie()
     return
 
 if __name__ == '__main__':

@@ -7,6 +7,9 @@
 - 柱状图(bar)
     >适用于展示分类数据的计数、频率或其他度量,主要用来做差异比较，不同类别之间的数值大小
 
+- 饼图(pie)
+    >表示占比，要注意变种有很多，可以是多环图，嵌套饼图（表示大类占比，大类中的各个子类占比等等）等。也可以使用饼图和直方图结合。
+
 - 热力图(heatmap)
     >通过颜色变化展示数据密度、分布及变化趋势的可视化工具，有很高的空间利用率，色块可以紧凑排列，颜色的深度
     可以跨越较大数据范围，并且人类本身对颜色的理解要由于对数字的理解
@@ -31,8 +34,6 @@
     2. 空间利用率高：六边形的形状使得它们在平面上比矩形更紧密地排列，减少了空隙，从而提高了数据的空间利用率。
     3. 平滑的密度估计：六边形的形状使得相邻的单元之间的连接更加自然，有助于在视觉上呈现数据的分布趋势。
     4. 适应性强：可以处理大量数据点，尤其是在数据点数量较多时，Hexbin 图能够有效地展示数据的整体分布，而不会因为数据点的重叠而导致信息丢失
-
-
 
 
 
@@ -113,6 +114,7 @@
 
 
 ## Reference
+- [matplotlib官方文档及demo](https://matplotlib.org/stable/gallery/pie_and_polar_charts/bar_of_pie.html)
 - [sql join](https://learnsql.com/blog/sql-join-cheat-sheet/joins-cheat-sheet-a4.pdf)
 - [统计学讲义](https://www.math.pku.edu.cn/teachers/lidf/course/probstathsy/probstathsy.pdf)
 - [箱线图介绍](https://www.stat.cmu.edu/~hseltman/309/Book/chapter4.pdf)

@@ -183,7 +183,7 @@ def draw_violinplot():
 #散点矩阵图
 def draw_scatter_matrix(): 
     # 创建示例数据
-    if 1:
+    if 0:
         data = {
             'A': [10, 5, 8, 7, 2,15,11,9,13,1],
             'B': [5, 4, 3, 2, 1,2,3,4,5,7],
@@ -221,6 +221,14 @@ def draw_scatter_matrix():
         show(plt)
     return
 
+#六边形箱图
+def draw_hexbin():
+    df = pd.DataFrame(np.random.randn(1000, 2), columns=['a', 'b'])
+    df['b'] = df['b'] + np.arange(1000)
+    df.plot.hexbin(x='a', y='b', gridsize=25)
+    show(plt)
+    return
+
 def main():
     #draw_curve("helix")
     #draw_histogram()
@@ -230,7 +238,8 @@ def main():
     #draw_boxplot()
     #draw_kde()
     #draw_violinplot()
-    draw_scatter_matrix()
+    #draw_scatter_matrix()
+    draw_hexbin()
     return
 
 if __name__ == '__main__':

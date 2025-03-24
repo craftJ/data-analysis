@@ -9,6 +9,7 @@ from mpl_toolkits.mplot3d import Axes3D
 from scipy.stats import norm
 from matplotlib.sankey import Sankey
 import os
+import random
 
 rawdata_path = "./dataset"
 
@@ -584,6 +585,81 @@ def draw_bubble():
     plt.show()
     return
 
+#韦恩图
+def draw_venn():
+    mode = 2
+    #3个以内的集合直接使用venn库，超出三个的venn不支持
+    if mode == 1:
+        from matplotlib_venn import venn3
+        # 定义3个随机集合,定义集合的大小范围
+        arry_size = 20
+        min_value = 1
+        max_value = 100
+        set_a = {random.randint(min_value, max_value) 
+                for _ in range(arry_size)}
+        
+        arry_size = 100
+        min_value = 50
+        max_value = 150
+        set_b = {random.randint(min_value, max_value) 
+                for _ in range(arry_size)}
+        
+        arry_size = 80
+        min_value = 25
+        max_value = 200
+        set_c = {random.randint(min_value, max_value) 
+                for _ in range(arry_size)}
+
+        # 绘制维恩图, 3个集合就是venn3
+        venn3([set_a, set_b, set_c], set_labels=('Set A', 'Set B','Set C'), 
+            set_colors=('red', 'blue', 'yellow'), alpha=0.5)
+
+        # 添加标题
+        plt.title('Custom Venn Diagram', fontsize=16)
+
+        # 显示图表
+        plt.show()
+    elif mode == 2:
+        from upsetplot import plot as upset_plot
+        # 定义集合的大小范围
+        min_size = 5
+        max_size = 10
+        # 定义随机整数的范围
+        min_value = 1
+        max_value = 200
+        # 生成随机集合
+        set_a = {random.randint(min_value, max_value) for _ in range(random.randint(min_size, max_size))}
+        set_b = {random.randint(min_value, max_value) for _ in range(random.randint(min_size, max_size))}
+        set_c = {random.randint(min_value, max_value) for _ in range(random.randint(min_size, max_size))}
+        set_d = {random.randint(min_value, max_value) for _ in range(random.randint(min_size, max_size))}
+        # 打印生成的集合
+        print("Set A:", set_a)
+        print("Set B:", set_b)
+        print("Set C:", set_c)
+        print("Set D:", set_d)
+
+        # 将集合转换为布尔 DataFrame
+        data = pd.DataFrame({
+            'Set A': [x in set_a for x in range(min_value, max_value + 1)],
+            'Set B': [x in set_b for x in range(min_value, max_value + 1)],
+            'Set C': [x in set_c for x in range(min_value, max_value + 1)],
+            'Set D': [x in set_d for x in range(min_value, max_value + 1)]
+        }, index=range(min_value, max_value + 1))
+
+        print(data)
+
+        #data = data.reset_index().melt(id_vars='index', var_name='Set', value_name='Presence')
+        #data = data[data['Presence']].drop(columns='Presence').set_index(['index', 'Set'])
+
+        # 绘制 UpSetPlot
+        upset_plot(data)
+        plt.title('UpSet Plot of Four Sets')
+        plt.show()
+    else:
+        print("unknown mode!!")
+    return
+
+
 def main():
     #draw_curve("helix")
     #draw_histogram()
@@ -599,7 +675,8 @@ def main():
     #draw_area()
     #draw_sankey()
     #draw_map(4)
-    draw_bubble()
+    #draw_bubble()
+    draw_venn()
     return
 
 if __name__ == '__main__':

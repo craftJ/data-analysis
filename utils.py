@@ -7,6 +7,7 @@ import sys
 import seaborn as sns
 from mpl_toolkits.mplot3d import Axes3D
 from scipy.stats import norm
+from matplotlib.sankey import Sankey
 import os
 
 rawdata_path = "./dataset"
@@ -339,6 +340,227 @@ def draw_pie():
         plt.show()
     return
 
+
+#面积图
+def draw_area():
+    # 创建数据
+    x = np.linspace(0, 10, 100)
+    y1 = np.sin(x)
+    y2 = np.cos(x)
+
+    # 绘制面积图
+    sns.lineplot(x=x, y=y1, label='sin(x)')
+    sns.lineplot(x=x, y=y2, label='cos(x)')
+    plt.fill_between(x, y1, color='blue', alpha=0.5)
+    plt.fill_between(x, y2, color='red', alpha=0.5)
+
+    # 添加标题和标签
+    plt.title('Area Plot')
+    plt.xlabel('x')
+    plt.ylabel('y')
+    plt.legend()
+
+    # 显示图形
+    plt.show()
+    return
+
+#桑基图
+def draw_sankey():
+    mode = 2
+    if mode == 1:
+        #这种方式的sankey比较丑
+        # 创建一个 Sankey 对象
+        sankey = Sankey()
+        # 添加流
+        sankey.add(flows=[0.25, 0.15, 0.60, -0.20, -0.15, -0.10, -0.40, -0.20],
+                labels=['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'],
+                orientations=[-1, 1, 0, 1, -1, -1, 0, -1])
+
+        # 绘制桑基图
+        diagrams = sankey.finish()
+        for diagram in diagrams:
+            diagram.text.set_fontweight('bold')
+        # 显示图形
+        plt.title('Sankey Diagram')
+        plt.show()
+    elif mode == 2:
+        #用plotly是交互式的sankey图，web端弹出页面后可以交互显示数据详细信息
+        import plotly.graph_objects as go
+        # 定义数据
+        labels = ["A", "B", "C", "D", "E"]
+
+        # source和target成对应关系，这里的定义，索引为0的流向了索引为1，索引为2的两部分
+        source = [0, 0, 1, 2, 3]  # 源节点索引
+        target = [1, 2, 3, 3, 4]  # 目标节点索引
+        value = [10, 15, 20, 5, 10]  # 流量值
+
+        # 创建桑基图
+        fig = go.Figure(data=[go.Sankey(
+            node=dict(
+                pad=15,
+                thickness=20,
+                line=dict(color="black", width=0.5),
+                label=labels,
+                color="yellow"
+            ),
+            link=dict(
+                source=source,
+                target=target,
+                value=value
+            )
+        )])
+
+        # 更新布局
+        fig.update_layout(
+            title_text="Sankey Diagram",
+            font_size=16,
+            height=600,
+            width=800
+        )
+        # 显示图形
+        fig.show()
+    else:
+        #do nothing
+        print("mode unknown!!")
+    return
+
+#地图
+def draw_map(mode):
+    if mode == 1:
+        # plotly这个图太强大了，交互式的地图，还可以伸缩，旋转！！
+        import plotly.express as px
+        # 加载数据
+        df = px.data.gapminder().query("country=='China'")
+        # 绘制散点地图
+        fig = px.scatter_geo(df, locations="iso_alpha", color="lifeExp",
+                            hover_name="country", size="gdpPercap",
+                            animation_frame="year", projection="natural earth")
+        # 添加标题
+        fig.update_layout(title="World Map using Plotly")
+
+        # 显示图形
+        fig.show()
+    elif mode == 2:
+        import geopandas as gpd
+        import matplotlib.pyplot as plt
+        from shapely.geometry import Point
+
+        # 加载世界地图数据
+        # 问题：AttributeError: module 'fiona' has no attribute 'path'，geopandas==0.13.2，fiona==1.10.0
+        # 解决：更新geopandas==0.14.4或固定fiona到版本1.9.6
+        # pip show fiona 查看版本号
+        # pip install fiona==1.9.6 安装指定版本
+        #shapefile_path = './dataset/tiger-data/ne_110m/ne_110m_admin_0_countries.shp'
+        #world = gpd.read_file(shapefile_path)
+
+        # 加载世界地图数据
+        world = gpd.read_file(gpd.datasets.get_path('naturalearth_lowres'))
+        # 创建一个示例分类数据集
+        data = {
+            'iso_a3': ['USA', 'CAN', 'MEX', 'BRA', 'CHN'],  # 国家代码
+            'category1': [30, 20, 10, 40, 50],
+            'category2': [20, 30, 40, 30, 20],
+            'category3': [50, 50, 50, 30, 30]
+        }
+
+        # 创建 DataFrame
+        data_df = pd.DataFrame(data)
+
+        print(world.columns)
+
+        # 将分类数据与世界地图数据合并
+        world = world.merge(data_df, on='iso_a3', how='left')
+
+        # 查看合并后的数据
+        print(world.head())
+
+        # 创建地图
+        fig, ax = plt.subplots(figsize=(15, 10))
+
+        # 绘制世界地图底图
+        world.plot(ax=ax, color='lightblue', edgecolor='black', alpha=0.5)
+
+        # 遍历每个国家，绘制符号饼图
+        for idx, row in world.iterrows():
+            if pd.notnull(row['category1']):  # 确保数据存在
+                # 获取分类数据
+                categories = [row['category1'], row['category2'], row['category3']]
+                labels = ['Category 1', 'Category 2', 'Category 3']
+                colors = ['red', 'green', 'blue']
+                
+                # 计算饼图的中心位置（国家的几何中心）
+                centroid = row['geometry'].centroid
+                x, y = centroid.x, centroid.y
+                
+                # 绘制饼图
+                ax.pie(categories, labels=labels, colors=colors, autopct='%1.1f%%', startangle=140,
+                    center=(x, y), radius=1, wedgeprops=dict(width=0.3))
+
+        # 设置标题
+        ax.set_title('Symbol Pie Chart on World Map', fontsize=16)
+        ax.set_axis_off()  # 关闭坐标轴
+
+        # 显示地图
+        plt.show()
+
+    elif mode == 3:
+        from pyecharts import options as opts
+        from pyecharts.charts import Map  
+        # 提供的数据
+        data = {
+            '省/市': ['河南省', '广东省', '山东省', '四川省', '安徽省', '河北省', '贵州省', '湖南省', '广西壮族自治区',
+                    '江西省', '湖北省', '江苏省', '陕西省', '山西省', '云南省', '浙江省', '甘肃省', '重庆市', '辽宁省',
+                    '内蒙古自治区', '福建省', '黑龙江省', '新疆维吾尔自治区', '吉林省', '宁夏回族自治区', '北京市', '海南省',
+                    '天津市', '上海市', '青海省', '西藏自治区'],
+            '2017年': [86.3, 75.7, 58.3, 58.3, 49.9, 43.6, 41.2, 41.1, 36.5, 36.5, 36.2, 33.0, 31.9, 31.7, 29.3, 29.1, 28.5,
+                    21.1, 20.8, 19.8, 18.8, 18.8, 18.4, 14.3, 6.9, 6.0, 5.7, 5.7, 5.0, 4.6, 2.8]
+        }            
+        # 数据处理，将省份名称和对应的高考人数组成元组列表 
+        province_data = [(province, num) for province, num in zip(data['省/市'], data['2017年'])]
+        # 使用 Map 类生成地图
+        china_map = (
+            Map()
+            .add("2017年高考人数(万人)", province_data, "china")
+            .set_series_opts(
+                label_opts=opts.LabelOpts(is_show=False, formatter="{c}", position="inside")
+            )
+            .set_global_opts(
+                visualmap_opts=opts.VisualMapOpts(max_=90, is_piecewise=True),
+                title_opts=opts.TitleOpts(title="2017年中国各省高考人数"),
+            )
+        )
+        # 生成本地html文件 
+        # 问题！！，依赖外部js文件，网络屏蔽后会导致显示空白
+        china_map.render("./dataset/tiger-data/中国高考人数地图.html")
+
+    elif mode == 4:
+        import geopandas as gpd
+        import matplotlib.pyplot as plt
+        from shapely.geometry import Point
+        # 读取自带世界地图数据集
+        countries = r'./dataset/tiger-data/ne_110m/ne_110m_admin_0_countries.shp'
+        cities = r'./dataset/tiger-data/ne_110m/ne_110m_admin_1_states_provinces.shp'
+        world = gpd.read_file(countries)
+        # 人口，大洲，国名，国家缩写，ISO国家代码，gdp，地理位置数据
+        # 检查数据集的列名
+        print("Columns in the GeoDataFrame:", world.columns)
+        # 查看数据
+        print(world.head())
+        # 问题！！！，geopandas已更新，对应的自带数据集合以及world接口方法存在变化,此处去除南极洲失败
+        # 'GeoDataFrame' object has no attribute 'pop_est'
+        # 去除南极地区
+        #world = world[(world.pop_est>0) & (world.name!="Antarctica")]
+        # 计算人均gpd
+        #world['gdp_per_cap'] = world.gdp_md_est / world.pop_est
+        # 绘图
+        #world.plot(column='gdp_per_cap')
+        world.plot()
+        plt.show()
+    else:
+        print("unknow mode!!")
+    return
+
+
 def main():
     #draw_curve("helix")
     #draw_histogram()
@@ -350,7 +572,10 @@ def main():
     #draw_violinplot()
     #draw_scatter_matrix()
     #draw_hexbin()
-    draw_pie()
+    #draw_pie()
+    #draw_area()
+    #draw_sankey()
+    draw_map(4)
     return
 
 if __name__ == '__main__':

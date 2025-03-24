@@ -538,9 +538,9 @@ def draw_map(mode):
         import matplotlib.pyplot as plt
         from shapely.geometry import Point
         # 读取自带世界地图数据集
-        countries = r'./dataset/tiger-data/ne_110m/ne_110m_admin_0_countries.shp'
-        cities = r'./dataset/tiger-data/ne_110m/ne_110m_admin_1_states_provinces.shp'
-        world = gpd.read_file(countries)
+        #countries = r'./dataset/tiger-data/ne_110m/ne_110m_admin_0_countries.shp'
+        #cities = r'./dataset/tiger-data/ne_110m/ne_110m_admin_1_states_provinces.shp'
+        world = gpd.read_file(gpd.datasets.get_path('naturalearth_lowres'))
         # 人口，大洲，国名，国家缩写，ISO国家代码，gdp，地理位置数据
         # 检查数据集的列名
         print("Columns in the GeoDataFrame:", world.columns)
@@ -548,13 +548,14 @@ def draw_map(mode):
         print(world.head())
         # 问题！！！，geopandas已更新，对应的自带数据集合以及world接口方法存在变化,此处去除南极洲失败
         # 'GeoDataFrame' object has no attribute 'pop_est'
+        # 使用 pip install GeoPandas==0.10.2 ，该库固定到0.10.2版本可以支持
         # 去除南极地区
-        #world = world[(world.pop_est>0) & (world.name!="Antarctica")]
+        world = world[(world.pop_est>0) & (world.name!="Antarctica")]
         # 计算人均gpd
-        #world['gdp_per_cap'] = world.gdp_md_est / world.pop_est
+        world['gdp_per_cap'] = world.gdp_md_est / world.pop_est
         # 绘图
-        #world.plot(column='gdp_per_cap')
-        world.plot()
+        world.plot(column='gdp_per_cap')
+        #world.plot()
         plt.show()
     else:
         print("unknow mode!!")

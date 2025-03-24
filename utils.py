@@ -561,6 +561,28 @@ def draw_map(mode):
         print("unknow mode!!")
     return
 
+#气泡图
+def draw_bubble():
+    # 示例数据
+    countries = ['USA', 'China', 'Japan', 'Germany', 'India']
+    gdp = [21.4, 14.3, 5.1, 3.9, 3.2]  # GDP (万亿美元)
+    population = [331, 1439, 126, 83, 1380]  # 人口 (百万)
+    unemployment_rate = [3.6, 3.9, 2.4, 3.1, 7.6]  # 失业率 (%)
+
+    # 创建气泡图
+    plt.figure(figsize=(10, 6))
+    plt.scatter(unemployment_rate, gdp, s=[p * 10 for p in population], alpha=0.5, c='blue')
+
+    # 添加标签和标题
+    for i, txt in enumerate(countries):
+        plt.annotate(txt, (unemployment_rate[i], gdp[i]), fontsize=9)
+
+    plt.xlabel('Unemployment Rate (%)')
+    plt.ylabel('GDP (Trillion USD)')
+    plt.title('GDP vs Unemployment Rate with Population Size')
+    plt.grid(True)
+    plt.show()
+    return
 
 def main():
     #draw_curve("helix")
@@ -576,7 +598,8 @@ def main():
     #draw_pie()
     #draw_area()
     #draw_sankey()
-    draw_map(4)
+    #draw_map(4)
+    draw_bubble()
     return
 
 if __name__ == '__main__':

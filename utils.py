@@ -1,15 +1,33 @@
 import numpy as np 
-import matplotlib.pyplot as plt 
+import matplotlib.pyplot as plt
+from matplotlib.sankey import Sankey
+from matplotlib.animation import FuncAnimation
 import pandas as pd
 from pandas import Series,DataFrame
 import inspect
 import sys
 import seaborn as sns
-from mpl_toolkits.mplot3d import Axes3D
-from scipy.stats import norm
-from matplotlib.sankey import Sankey
 import os
 import random
+from scipy.interpolate import interp1d
+from scipy.stats import norm
+# 用plotly是交互式的sankey图，web端弹出页面后可以交互显示数据详细信息,plotly很强大，交互式的地图，还可以伸缩，旋转！！
+import plotly.express as px
+import plotly.graph_objects as go
+from mpl_toolkits.mplot3d import Axes3D
+
+#for 地理相关绘图
+import geopandas as gpd
+from shapely.geometry import Point
+from pyecharts import options as opts
+from pyecharts.charts import Map 
+from shapely.geometry import Point
+#for venn图
+from matplotlib_venn import venn3
+from upsetplot import plot as upset_plot
+from upsetplot.data import from_contents
+from upsetplot import generate_counts
+
 
 rawdata_path = "./dataset"
 
@@ -385,8 +403,6 @@ def draw_sankey():
         plt.title('Sankey Diagram')
         plt.show()
     elif mode == 2:
-        #用plotly是交互式的sankey图，web端弹出页面后可以交互显示数据详细信息
-        import plotly.graph_objects as go
         # 定义数据
         labels = ["A", "B", "C", "D", "E"]
 
@@ -428,8 +444,6 @@ def draw_sankey():
 #地图
 def draw_map(mode):
     if mode == 1:
-        # plotly这个图太强大了，交互式的地图，还可以伸缩，旋转！！
-        import plotly.express as px
         # 加载数据
         df = px.data.gapminder().query("country=='China'")
         # 绘制散点地图
@@ -442,10 +456,6 @@ def draw_map(mode):
         # 显示图形
         fig.show()
     elif mode == 2:
-        import geopandas as gpd
-        import matplotlib.pyplot as plt
-        from shapely.geometry import Point
-
         # 加载世界地图数据
         # 问题：AttributeError: module 'fiona' has no attribute 'path'，geopandas==0.13.2，fiona==1.10.0
         # 解决：更新geopandas==0.14.4或固定fiona到版本1.9.6
@@ -504,9 +514,7 @@ def draw_map(mode):
         # 显示地图
         plt.show()
 
-    elif mode == 3:
-        from pyecharts import options as opts
-        from pyecharts.charts import Map  
+    elif mode == 3: 
         # 提供的数据
         data = {
             '省/市': ['河南省', '广东省', '山东省', '四川省', '安徽省', '河北省', '贵州省', '湖南省', '广西壮族自治区',
@@ -535,9 +543,6 @@ def draw_map(mode):
         china_map.render("./dataset/tiger-data/中国高考人数地图.html")
 
     elif mode == 4:
-        import geopandas as gpd
-        import matplotlib.pyplot as plt
-        from shapely.geometry import Point
         # 读取自带世界地图数据集
         #countries = r'./dataset/tiger-data/ne_110m/ne_110m_admin_0_countries.shp'
         #cities = r'./dataset/tiger-data/ne_110m/ne_110m_admin_1_states_provinces.shp'
@@ -591,7 +596,6 @@ def draw_venn():
     #3个以内的集合直接使用venn库，超出三个的venn不支持,
     #接口如此设计是合理的，venn上太多的圈，不方便清晰的展示多个圈之间的关系,你就想要表示1个圈和其他3个圈的交集就很不好绘制了
     if mode == 1:
-        from matplotlib_venn import venn3
         # 定义3个随机集合,定义集合的大小范围
         arry_size = 20
         min_value = 1
@@ -620,11 +624,7 @@ def draw_venn():
 
         # 显示图表
         plt.show()
-    elif mode == 2:
-        from upsetplot import plot as upset_plot
-        from upsetplot.data import from_contents
-        from upsetplot import generate_counts
-        
+    elif mode == 2:        
         # demo 1, 使用generate_counts构造
         example = generate_counts()
         if isinstance(example.index, pd.MultiIndex):
@@ -692,6 +692,66 @@ def draw_venn():
         print("unknown mode!!")
     return
 
+def draw_dynamic_linechart(): 
+    mode = 1
+    if mode == 1:
+        # 固定随机数种子，保证每次随机一样
+        np.random.seed(0)
+        time = np.arange(0, 100, 1)  # 时间范围
+        data = np.random.randn(len(time)).cumsum()  # 随机生成的累积和数据
+        # 使用插值生成更密集的数据点
+        # 当 kind='cubic' 时，interp1d 会生成一个三次插值函数。三次插值是一种平滑的插值方法，通过拟合三次多项式来生成数据点之间的值，使得生成的曲线更加平滑
+        f = interp1d(time, data, kind='cubic')
+        time_dense = np.linspace(0, len(time) - 1, 500)  # 更密集的时间点
+        data_dense = f(time_dense)  # 插值后的数据
+        # 创建一个图形和轴
+        fig, ax = plt.subplots()
+        line, = ax.plot([], [], lw=2)  # 创建一个空的折线图
+        ax.set_xlim(0, len(time))  # 设置 x 轴范围
+        ax.set_ylim(min(data_dense), max(data_dense))  # 设置 y 轴范围
+
+        # 初始化函数
+        def init():
+            line.set_data([], [])
+            return line,
+
+        # 更新函数
+        def update(frame):
+            line.set_data(time_dense[:frame], data_dense[:frame])  # 更新数据
+            return line,
+
+        # 创建动画,interval调整帧间隔ms，以调整显示速度
+        ani = FuncAnimation(fig, update, 
+                            frames=len(time_dense), init_func=init, blit=True, interval=50)
+                            #frames=len(time_dense), init_func=init, blit=True)
+        # 显示动画
+        plt.show()
+    elif mode == 2:
+        # 生成示例数据
+        np.random.seed(0)
+        time = np.arange(0, 100, 1)  # 时间范围
+        data = np.random.randn(len(time)).cumsum()  # 随机生成的累积和数据
+        # 创建动态折线图
+        fig = go.Figure(data=go.Scatter(
+            x=time,
+            y=data,
+            mode='lines',
+            line=dict(shape='spline'),  # 使用平滑曲线
+            line_color='rgba(31, 119, 180, 0.8)',
+            line_width=2
+        ))
+        # 添加动态效果
+        fig.update_layout(
+            title='动态折线图',
+            xaxis_title='时间',
+            yaxis_title='值',
+            template='plotly_dark'
+        )
+        # 显示图表
+        fig.show()
+    return
+
+
 
 def main():
     #draw_curve("helix")
@@ -709,7 +769,8 @@ def main():
     #draw_sankey()
     #draw_map(4)
     #draw_bubble()
-    draw_venn()
+    #draw_venn()
+    draw_dynamic_linechart()
     return
 
 if __name__ == '__main__':

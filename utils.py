@@ -588,7 +588,8 @@ def draw_bubble():
 #韦恩图
 def draw_venn():
     mode = 2
-    #3个以内的集合直接使用venn库，超出三个的venn不支持
+    #3个以内的集合直接使用venn库，超出三个的venn不支持,
+    #接口如此设计是合理的，venn上太多的圈，不方便清晰的展示多个圈之间的关系,你就想要表示1个圈和其他3个圈的交集就很不好绘制了
     if mode == 1:
         from matplotlib_venn import venn3
         # 定义3个随机集合,定义集合的大小范围
@@ -621,38 +622,70 @@ def draw_venn():
         plt.show()
     elif mode == 2:
         from upsetplot import plot as upset_plot
-        # 定义集合的大小范围
-        min_size = 5
-        max_size = 10
-        # 定义随机整数的范围
-        min_value = 1
-        max_value = 200
-        # 生成随机集合
-        set_a = {random.randint(min_value, max_value) for _ in range(random.randint(min_size, max_size))}
-        set_b = {random.randint(min_value, max_value) for _ in range(random.randint(min_size, max_size))}
-        set_c = {random.randint(min_value, max_value) for _ in range(random.randint(min_size, max_size))}
-        set_d = {random.randint(min_value, max_value) for _ in range(random.randint(min_size, max_size))}
+        from upsetplot.data import from_contents
+        from upsetplot import generate_counts
+        
+        # demo 1, 使用generate_counts构造
+        example = generate_counts()
+        if isinstance(example.index, pd.MultiIndex):
+            print("索引是 MultiIndex")
+        else:
+            print("索引不是 MultiIndex")
+        print(example,"\n\n")
+        '''
+        example数据：
+        cat0   cat1   cat2 
+        False  False  False      56
+                    True      283
+            True   False    1279
+                    True     5882
+        True   False  False      24
+                    True       90
+            True   False     429
+                    True     1957
+        Name: value, dtype: int64
+        [重要！！！]  用于绘图的分类需要作为索引，且为BOOL型组合
+        Level 0 (cat0): [False, True]
+        Level 1 (cat1): [False, True]
+        Level 2 (cat2): [False, True]
+        '''
+        # 获取 MultiIndex 的所有级别
+        levels = example.index.levels
+        # 打印每个级别的所有唯一值
+        for i, level in enumerate(levels):
+            print(f"Level {i} ({example.index.names[i]}): {list(level)}")
+        print("\n\n")
+        # 绘制 UpSetPlot
+        upset_plot(example)
+        plt.title('UpSet Plot of Four Sets')
+        plt.show()     
+
+        # demo 2, 自定义构造
+        # 生成随机集合，注意这里不能是list，会导致随机出现重复值，导致绘图失败
+        set_a = {random.randint(1, 100) for _ in range(random.randint(10, 50))}
+        set_b = {random.randint(50, 150) for _ in range(random.randint(10, 60))}
+        set_c = {random.randint(90, 200) for _ in range(random.randint(10, 80))}
+        set_d = {random.randint(30, 300) for _ in range(random.randint(10, 100))}
         # 打印生成的集合
         print("Set A:", set_a)
         print("Set B:", set_b)
         print("Set C:", set_c)
         print("Set D:", set_d)
+        data = {"A":set_a,"B":set_b,"C":set_c,"D":set_d}
 
-        # 将集合转换为布尔 DataFrame
-        data = pd.DataFrame({
-            'Set A': [x in set_a for x in range(min_value, max_value + 1)],
-            'Set B': [x in set_b for x in range(min_value, max_value + 1)],
-            'Set C': [x in set_c for x in range(min_value, max_value + 1)],
-            'Set D': [x in set_d for x in range(min_value, max_value + 1)]
-        }, index=range(min_value, max_value + 1))
+        # 转换为upsetplot需要的格式
+        # [重要！！！] data的格式，需要是一个字典，
+        # 其中键是集合名称，值是集合中包含的元素列表。这些元素必须是 int 或 str 格式,且单个集合中元素不能出现重复
+        upset_data = from_contents(data)
+        print(upset_data)
 
-        print(data)
-
-        #data = data.reset_index().melt(id_vars='index', var_name='Set', value_name='Presence')
-        #data = data[data['Presence']].drop(columns='Presence').set_index(['index', 'Set'])
-
+        # 验证索引是否为 MultiIndex
+        if isinstance(upset_data.index, pd.MultiIndex):
+            print("索引是 MultiIndex")
+        else:
+            print("索引不是 MultiIndex")
         # 绘制 UpSetPlot
-        upset_plot(data)
+        upset_plot(upset_data)
         plt.title('UpSet Plot of Four Sets')
         plt.show()
     else:

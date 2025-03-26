@@ -84,29 +84,58 @@ def draw_dynamic_rankbar():
         plt.rcParams['axes.unicode_minus'] = False
 
         # 读取数据
-        dataset= os.path.join('./dataset/searborn-data/', 'healthexp.csv')
+        datapath = r'E:\prj\data-analysis\dataset\tiger-data'
+        dataset= os.path.join(datapath, 'gdp.csv')
         dbg("info",1,dataset)
-        df_data = pd.read_csv(dataset, encoding='utf-8', header=None, 
-                    names=['year', 'country', 'Spending_USD','Life_Expectancy']).set_index("year")
+        df_data = pd.read_csv(dataset, encoding='utf-8',
+                    #skiprows=range(1, 5), 
+                    nrows=11,
+                    usecols=["Country Name","1960","1961","1962","1963","1964","1965","1966","1967",
+                             "1968","1969","1970","1971","1972","1973","1974","1975","1976","1977",
+                             "1978","1979","1980","1981","1982","1983","1984","1985","1986","1987",
+                             "1988","1989","1990","1991","1992","1993","1994","1995","1996","1997",
+                             "1998","1999","2000","2001","2002","2003","2004","2005","2006","2007",
+                             "2008","2009","2010","2011","2012","2013","2014","2015","2016","2017",
+                             "2018","2019","2020","2021","2022","2023"], header=0)
+
+        print("\n\n",df_data.head(),"\n\n")
+
+        # 转换宽表为长表（年份从列变为行）
+        df_long = df_data.melt(
+            id_vars="Country Name",     # 保持不变的列（标识符）
+            var_name="Year",       # 新列名（原列名转为行）
+            value_name="GDP"     # 新列名（原数值）
+            )
+        print("\n\n",df_long.head(),"\n\n")
+
         # pivot_table即类似Excel的数据透视图
-        df = pd.pivot_table(df_data, values='Life_Expectancy', 
-            index=['year'], columns=['country'], fill_value=0).head(200)
+        # 关键的4个字段 index
+        # 1. index：Index就是层次字段，要通过透视表获取什么信息就按照相应的顺序设置字段
+        # 2. values：关注的数据
+        # 3. Aggfunc: 设置我们对数据聚合时进行的函数操作
+        # 4. Columns类似Index可以设置列层次字段，它不是一个必要参数，作为一种分割数据的可选方式
+        #year,month,passengers
+        df = pd.pivot_table(df_long, values='GDP', 
+                index=['Year'], columns=['Country Name'], fill_value=0)
+
+        print("\n\n",df,"\n\n")
 
         # 新建画布
         cnv = nim.Canvas(figsize=(12.8, 7.2), facecolor="#001219")
         bar = nim.Barplot(
-            df, "%Y/%m/%d", "2h", post_update=None, rounded_edges=True, grid=False, n_bars=10
+            df, "%Y", "1YE", post_update=None, rounded_edges=True, grid=False, n_bars=50
         )
-        bar.set_title("动态排名图", color="w", weight=600, x=0.15, size=30)
+        bar.set_title("Country GDP Rank", color="w", weight=600, x=0.15, size=30)
         bar.set_time(
-            callback=lambda i, datafier: datafier.data.index[i].strftime("%Y-%m-%d"), color="w", y=0.2, size=20
+            callback=lambda i, datafier: datafier.data.index[i].strftime("%Y"), color="w", y=0.2, size=20
         )
         bar.set_bar_annots(color="w", size=13)
         bar.set_xticks(colors="w", length=0, labelsize=13)
         bar.set_yticks(colors="w", labelsize=13)
         cnv.add_plot(bar)
-        cnv.animate()
-        cnv.save("dynamic_ranking", 24, "gif")  # 保存为 GIF
+        cnv.animate(interval = 200)
+        plt.show()
+        cnv.save("Country-GDP-Rank", 300, "gif")  # 保存为 GIF
     elif mode == 2:
         dbg("info",0,"unkown mode!!!")
     elif mode == 3:
@@ -114,8 +143,6 @@ def draw_dynamic_rankbar():
     else:
         dbg("info",0,"unkown mode!!!")
     return
-
-
 
 
 def main():

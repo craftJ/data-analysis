@@ -15,7 +15,8 @@ def install_packages():
         "scipy",
         "pandas",
         "plotly",
-        "seaborn"
+        "seaborn",
+        "pynimate"
     ]
     print("Python libs are installing...")
     for package in packages:

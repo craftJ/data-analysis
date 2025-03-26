@@ -31,14 +31,6 @@ from upsetplot import generate_counts
 
 rawdata_path = "./dataset"
 
-def dbg_caller():
-    # 获取调用者的帧信息
-    frame = sys._getframe(1)  # 1 表示调用栈的上一层
-    caller_line_number = frame.f_lineno
-    caller_function_name = frame.f_code.co_name
-    print(f"func:{caller_function_name}, line:{caller_line_number}")
-    return
-
 def show(plt,secs=None):
     if secs is not None:
         plt.show(block=False)
@@ -115,41 +107,6 @@ def draw_bar():
     plt.xlabel("Category")
     plt.ylabel("Value")
     show(plt,1)
-    return
-
-#函数曲线
-def draw_curve(funtype):
-    if funtype == "sin":
-        # 计算正弦曲线上点的 x 和 y 坐标
-        x = np.arange(0,  4 * np.pi,  0.1) 
-        y = np.sin(x)
-        plt.title("y=sin(x)")
-        plt.plot(x, y) 
-        show(plt, 1)
-    elif funtype == "helix":
-        # 定义参数
-        a = 1  # 半径
-        b = 0.2  # 螺距
-        t = np.linspace(0, 8 * np.pi, 100)  # 参数 t 的取值范围
-
-        # 计算螺旋线的坐标
-        x = a * np.cos(t)
-        y = a * np.sin(t)
-        z = b * t
-
-        # 绘制螺旋线
-        fig = plt.figure(figsize=(10, 10))
-        ax = fig.add_subplot(111,projection='3d')
-        ax.plot(x, y, z)
-
-        # 设置坐标轴标签
-        plt.title("helix")
-        ax.set_xlabel('X')
-        ax.set_ylabel('Y')
-        ax.set_zlabel('Z')
-        show(plt)
-    else:
-        print("Unknown function!!")
     return
 
 #Kernel Density Estimation
@@ -754,7 +711,6 @@ def draw_dynamic_linechart():
 
 
 def main():
-    #draw_curve("helix")
     #draw_histogram()
     #draw_hist()
     #draw_bar()

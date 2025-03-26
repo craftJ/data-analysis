@@ -9,6 +9,11 @@ from pandas import Series,DataFrame
 import plotly.express as px
 import plotly.graph_objects as go
 
+#pynimate 要求 Python 版本至少为 3.9
+import pynimate as nim
+
+#用于调试
+from debug import dbg_info as dbg
 
 #动态折线图
 def draw_dynamic_linechart(): 
@@ -70,9 +75,52 @@ def draw_dynamic_linechart():
         fig.show()
     return
 
+#动态排名图
+def draw_dynamic_rankbar():
+    mode = 1
+    if mode == 1:
+        # 中文显示
+        plt.rcParams['font.sans-serif'] = ['SimHei']  # Windows
+        plt.rcParams['axes.unicode_minus'] = False
+
+        # 读取数据
+        dataset= os.path.join('./dataset/searborn-data/', 'healthexp.csv')
+        dbg("info",1,dataset)
+        df_data = pd.read_csv(dataset, encoding='utf-8', header=None, 
+                    names=['year', 'country', 'Spending_USD','Life_Expectancy']).set_index("year")
+        # pivot_table即类似Excel的数据透视图
+        df = pd.pivot_table(df_data, values='Life_Expectancy', 
+            index=['year'], columns=['country'], fill_value=0).head(200)
+
+        # 新建画布
+        cnv = nim.Canvas(figsize=(12.8, 7.2), facecolor="#001219")
+        bar = nim.Barplot(
+            df, "%Y/%m/%d", "2h", post_update=None, rounded_edges=True, grid=False, n_bars=10
+        )
+        bar.set_title("动态排名图", color="w", weight=600, x=0.15, size=30)
+        bar.set_time(
+            callback=lambda i, datafier: datafier.data.index[i].strftime("%Y-%m-%d"), color="w", y=0.2, size=20
+        )
+        bar.set_bar_annots(color="w", size=13)
+        bar.set_xticks(colors="w", length=0, labelsize=13)
+        bar.set_yticks(colors="w", labelsize=13)
+        cnv.add_plot(bar)
+        cnv.animate()
+        cnv.save("dynamic_ranking", 24, "gif")  # 保存为 GIF
+    elif mode == 2:
+        dbg("info",0,"unkown mode!!!")
+    elif mode == 3:
+        dbg("info",0,"unkown mode!!!")
+    else:
+        dbg("info",0,"unkown mode!!!")
+    return
+
+
+
 
 def main():
-    draw_dynamic_linechart()
+    #draw_dynamic_linechart()
+    draw_dynamic_rankbar()
     return
 
 if __name__ == '__main__':

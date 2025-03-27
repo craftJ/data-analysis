@@ -4,6 +4,7 @@ import os
 import random
 from scipy.interpolate import interp1d
 from matplotlib.animation import FuncAnimation
+import matplotlib.cm as cm
 import pandas as pd
 from pandas import Series,DataFrame
 import plotly.express as px
@@ -81,15 +82,13 @@ def draw_dynamic_rankbar():
     mode = 1
     if mode == 1:
         # 中文显示
-        plt.rcParams['font.sans-serif'] = ['SimHei']  # Windows
-        plt.rcParams['axes.unicode_minus'] = False
-
+        #plt.rcParams['font.sans-serif'] = ['SimHei']  # Windows
+        #plt.rcParams['axes.unicode_minus'] = False
         dbg.dbg_pwd()
-
         # 读取数据
-        datapath = r'E:\prj\data-analysis\dataset\tiger-data'
+        datapath = r'E:\code\datanaysis\data-analysis\dataset\tiger-data'
         dataset= os.path.join(datapath, 'gdp.csv')
-        dbg("info",1,dataset)
+        dbg.dbg_info("info",1,dataset)
         df_data = pd.read_csv(dataset, encoding='utf-8',
                     #skiprows=range(1, 5), 
                     nrows=11,
@@ -101,7 +100,7 @@ def draw_dynamic_rankbar():
                              "2008","2009","2010","2011","2012","2013","2014","2015","2016","2017",
                              "2018","2019","2020","2021","2022","2023"], header=0)
 
-        print("\n\n",df_data.head(),"\n\n")
+        print("\n\n",df_data,"\n\n")
 
         # 转换宽表为长表（年份从列变为行）
         df_long = df_data.melt(
@@ -109,7 +108,7 @@ def draw_dynamic_rankbar():
             var_name="Year",       # 新列名（原列名转为行）
             value_name="GDP"     # 新列名（原数值）
             )
-        print("\n\n",df_long.head(),"\n\n")
+        print("\n\n",df_long,"\n\n")
 
         # pivot_table即类似Excel的数据透视图
         # 关键的4个字段 index
@@ -124,21 +123,35 @@ def draw_dynamic_rankbar():
         print("\n\n",df,"\n\n")
 
         # 新建画布
-        cnv = nim.Canvas(figsize=(12.8, 7.2), facecolor="#001219")
+        cnv = nim.Canvas(figsize=(12.8, 7.2), facecolor="white")
         bar = nim.Barplot(
-            df, "%Y", "1YE", post_update=None, rounded_edges=True, grid=False, n_bars=50
+            df, "%Y", "1YE", post_update=None, rounded_edges=False, grid=True, n_bars=20
         )
-        bar.set_title("Country GDP Rank", color="w", weight=600, x=0.15, size=30)
+        bar.set_title("Countries' GDP Rank", color="black",x=0.3,weight=500,size=20)
         bar.set_time(
-            callback=lambda i, datafier: datafier.data.index[i].strftime("%Y"), color="w", y=0.2, size=20
+            callback=lambda i, datafier: datafier.data.index[i].strftime("%Y"), 
+            color="w", y=0.2, size=20
         )
-        bar.set_bar_annots(color="w", size=13)
-        bar.set_xticks(colors="w", length=0, labelsize=13)
-        bar.set_yticks(colors="w", labelsize=13)
+        # 生成默认颜色列表
+        default_colors = cm.viridis(np.linspace(0, 1, len(df.columns)))
+        # 定义特定条形的颜色
+        custom_colors = {
+            "China": "#E4080A"
+        }
+        # 替换特定条形的颜色
+        colors = [custom_colors.get(col, default) for col, default in 
+            zip(df.columns, default_colors)]
+        # 设置条形图颜色
+        bar.set_bar_color(colors)
+
+        bar.set_bar_annots(color="black", size=13)
+        bar.set_xticks(colors="black", length=0, labelsize=13)
+        bar.set_yticks(colors="black", labelsize=13)
         cnv.add_plot(bar)
-        cnv.animate(interval = 200)
+        cnv.animate(interval = 100)
         plt.show()
-        cnv.save("Country-GDP-Rank", 300, "gif")  # 保存为 GIF
+        # 保存为 GIF
+        cnv.save("./docs/Country-GDP-Rank", 300, "gif") 
     elif mode == 2:
         dbg.dbg_info("info",0,"unkown mode!!!")
     elif mode == 3:
@@ -146,7 +159,6 @@ def draw_dynamic_rankbar():
     else:
         dbg.dbg_info("info",0,"unkown mode!!!")
     return
-
 
 def main():
     #draw_dynamic_linechart()

@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import numpy as np 
 import matplotlib.pyplot as plt
 import os
@@ -15,7 +16,6 @@ import pynimate as nim
 
 #用于调试
 import debug as dbg
-
 
 #动态折线图
 def draw_dynamic_linechart(): 
@@ -151,7 +151,7 @@ def draw_dynamic_rankbar():
         cnv.animate(interval = 100)
         plt.show()
         # 保存为 GIF
-        cnv.save("./docs/Country-GDP-Rank", 300, "gif") 
+        #cnv.save("./docs/Country-GDP-Rank", 300, "gif") 
     elif mode == 2:
         dbg.dbg_info("info",0,"unkown mode!!!")
     elif mode == 3:
@@ -159,6 +159,7 @@ def draw_dynamic_rankbar():
     else:
         dbg.dbg_info("info",0,"unkown mode!!!")
     return
+
 
 def main():
     #draw_dynamic_linechart()

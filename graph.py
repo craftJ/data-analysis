@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import numpy as np 
 import matplotlib.pyplot as plt
 from matplotlib.sankey import Sankey
@@ -13,7 +14,7 @@ from scipy.interpolate import interp1d
 from scipy.stats import norm
 # 用plotly是交互式的sankey图，web端弹出页面后可以交互显示数据详细信息,plotly很强大，交互式的地图，还可以伸缩，旋转！！
 import plotly.express as px
-import plotly.graph_objects as go\
+import plotly.graph_objects as go
 
 # mpl_toolkits 并不是一个独立的 Python 包，而是 matplotlib 库
 from mpl_toolkits.mplot3d import Axes3D
@@ -29,6 +30,10 @@ from matplotlib_venn import venn3
 from upsetplot import plot as upset_plot
 from upsetplot.data import from_contents
 from upsetplot import generate_counts
+#for 词云图
+from wordcloud import WordCloud
+#for 图片处理
+from PIL import Image
 
 
 rawdata_path = "./dataset"
@@ -651,63 +656,34 @@ def draw_venn():
         print("unknown mode!!")
     return
 
-def draw_dynamic_linechart(): 
-    mode = 1
-    if mode == 1:
-        # 固定随机数种子，保证每次随机一样
-        np.random.seed(0)
-        time = np.arange(0, 100, 1)  # 时间范围
-        data = np.random.randn(len(time)).cumsum()  # 随机生成的累积和数据
-        # 使用插值生成更密集的数据点
-        # 当 kind='cubic' 时，interp1d 会生成一个三次插值函数。三次插值是一种平滑的插值方法，通过拟合三次多项式来生成数据点之间的值，使得生成的曲线更加平滑
-        f = interp1d(time, data, kind='cubic')
-        time_dense = np.linspace(0, len(time) - 1, 500)  # 更密集的时间点
-        data_dense = f(time_dense)  # 插值后的数据
-        # 创建一个图形和轴
-        fig, ax = plt.subplots()
-        line, = ax.plot([], [], lw=2)  # 创建一个空的折线图
-        ax.set_xlim(0, len(time))  # 设置 x 轴范围
-        ax.set_ylim(min(data_dense), max(data_dense))  # 设置 y 轴范围
 
-        # 初始化函数
-        def init():
-            line.set_data([], [])
-            return line,
+#词云图
+def draw_wordcloud():
+    # 示例文本数据
+    text = """
+    Python 是一种高级编程语言，具有简洁的语法和强大的功能。
+    Python 可以用于 Web 开发、数据分析、人工智能等多个领域。
+    Python 的语法简洁明了，易于学习和使用。
+    """
+    # 创建词云对象
+    # [注意！！！] 此处需要配置指定中文字体路径，否则会导致中文显示乱码
+    font_path = "C:\\Windows\\Fonts\\msyh.ttc"  # 微软雅黑字体路径
+    wordcloud = WordCloud(
+        font_path=font_path,
+        width=800,  # 词云图的宽度
+        height=400,  # 词云图的高度
+        background_color='white',  # 背景颜色
+        max_words=100,  # 最大显示的词数
+        min_font_size=10,  # 最小字体大小
+        max_font_size=100,  # 最大字体大小
+        random_state=42  # 随机种子，用于生成可重复的结果
+    ).generate(text)
 
-        # 更新函数
-        def update(frame):
-            line.set_data(time_dense[:frame], data_dense[:frame])  # 更新数据
-            return line,
-
-        # 创建动画,interval调整帧间隔ms，以调整显示速度
-        ani = FuncAnimation(fig, update, 
-                            frames=len(time_dense), init_func=init, blit=True, interval=50)
-                            #frames=len(time_dense), init_func=init, blit=True)
-        # 显示动画
-        plt.show()
-    elif mode == 2:
-        # 生成示例数据
-        np.random.seed(0)
-        time = np.arange(0, 100, 1)  # 时间范围
-        data = np.random.randn(len(time)).cumsum()  # 随机生成的累积和数据
-        # 创建动态折线图
-        fig = go.Figure(data=go.Scatter(
-            x=time,
-            y=data,
-            mode='lines',
-            line=dict(shape='spline'),  # 使用平滑曲线
-            line_color='rgba(31, 119, 180, 0.8)',
-            line_width=2
-        ))
-        # 添加动态效果
-        fig.update_layout(
-            title='动态折线图',
-            xaxis_title='时间',
-            yaxis_title='值',
-            template='plotly_dark'
-        )
-        # 显示图表
-        fig.show()
+    # 显示词云图
+    plt.figure(figsize=(10, 5))
+    plt.imshow(wordcloud, interpolation='bilinear')
+    plt.axis('off')  # 关闭坐标轴
+    plt.show()
     return
 
 
@@ -728,7 +704,7 @@ def main():
     #draw_map(4)
     #draw_bubble()
     #draw_venn()
-    draw_dynamic_linechart()
+    draw_wordcloud()
     return
 
 if __name__ == '__main__':

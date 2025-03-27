@@ -4,6 +4,7 @@ import subprocess
 import sys
 
 def install_check():
+    #TODO: 需要自动实现更新环境到符合要求
     print("Python Version:",sys.version)
     subprocess.check_call([sys.executable, "-m", "pip","-V"])
     return

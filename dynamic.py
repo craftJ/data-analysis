@@ -13,7 +13,8 @@ import plotly.graph_objects as go
 import pynimate as nim
 
 #用于调试
-from debug import dbg_info as dbg
+import debug as dbg
+
 
 #动态折线图
 def draw_dynamic_linechart(): 
@@ -83,12 +84,23 @@ def draw_dynamic_rankbar():
         plt.rcParams['font.sans-serif'] = ['SimHei']  # Windows
         plt.rcParams['axes.unicode_minus'] = False
 
+        dbg.dbg_pwd()
+
         # 读取数据
-        dataset= os.path.join('./dataset/searborn-data/', 'healthexp.csv')
-        dbg("info",1,dataset)
-        df_data = pd.read_csv(dataset, encoding='utf-8', header=None, 
-                    names=['year', 'country', 'Spending_USD','Life_Expectancy']).set_index("year")
+        #dataset= os.path.join('./dataset/searborn-data/', 'healthexp.csv')
+        datapath = r'E:\code\datanaysis\data-analysis\dataset\seaborn-data'
+        dataset  = os.path.join(datapath,'healthexp.csv')
+
+        dbg.dbg_info("info",1,dataset)
+        df_data = pd.read_csv(dataset, encoding='utf-8', header=0)
+        
+        print("\n\n",df_data,"\n")
+        
         # pivot_table即类似Excel的数据透视图
+        # pivot_table(data, values=None, index=None, columns=None,aggfunc='mean', fill_value=None, 
+        #   margins=False, dropna=True, margins_name='All')
+        # 关键是4个核心参数，index、values、columns、aggfunc
+        # index：
         df = pd.pivot_table(df_data, values='Life_Expectancy', 
             index=['year'], columns=['country'], fill_value=0).head(200)
 
@@ -108,14 +120,12 @@ def draw_dynamic_rankbar():
         cnv.animate()
         cnv.save("dynamic_ranking", 24, "gif")  # 保存为 GIF
     elif mode == 2:
-        dbg("info",0,"unkown mode!!!")
+        dbg.dbg_info("info",0,"unkown mode!!!")
     elif mode == 3:
-        dbg("info",0,"unkown mode!!!")
+        dbg.dbg_info("info",0,"unkown mode!!!")
     else:
-        dbg("info",0,"unkown mode!!!")
+        dbg.dbg_info("info",0,"unkown mode!!!")
     return
-
-
 
 
 def main():

@@ -22,6 +22,12 @@ def dbg_info(msgType,frameNo,detailStr):
         print(f"[INFO][{file_name}][{func_name}][{line_number}],[{detailStr}]")
     return
 
+def dbg_pwd():
+    print("Current WorkDir:",os.getcwd())
+    return
+
+
+
 
 
 

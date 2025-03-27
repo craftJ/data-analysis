@@ -159,7 +159,7 @@ def draw_violinplot():
                 #order = ['lisa','joe','tom','jerry','james'],
                 density_norm='count',#
                 split = True, # 将小提琴图从中间割裂开，形成不同的密度曲线；
-                palette = 'RdBu' # 指定不同性别对应的颜色（因为hue参数为设置为性别变量）
+                palette = 'RdBu' # 指定不同性别对应的颜色(因为hue参数为设置为性别变量)
                 )
     # 添加图形标题
     plt.title('每月消费情况')
@@ -221,8 +221,8 @@ def draw_hexbin():
 #饼图
 def draw_pie():
     #mode == 1: 简单饼图
-    #mode == 2：嵌套饼图（使用bar，极坐标系方式绘制叠加）
-    #mode == 3：嵌套饼图（使用pie绘制叠加）
+    #mode == 2：嵌套饼图(使用bar，极坐标系方式绘制叠加)
+    #mode == 3：嵌套饼图(使用pie绘制叠加)
     mode = 3
     if mode == 1:
         fig, ax = plt.subplots(figsize=(6, 3), subplot_kw=dict(aspect="equal"))
@@ -257,7 +257,7 @@ def draw_pie():
         valsnorm = vals/np.sum(vals)*2*np.pi
         print(valsnorm,"\n")
         # Obtain the ordinates of the bar edges
-        # 在极坐标系下，条形图的“ordinates”（纵坐标）实际上是指条形的半径边界值。
+        # 在极坐标系下，条形图的“ordinates”(纵坐标)实际上是指条形的半径边界值。
         # 注意！！这里使用flatten转换后再cumsum不断累加，达到了不同分类占用弧度的不断累加，方便得到每个大类的开始弧度位置
         valsleft = np.cumsum(np.append(0, valsnorm.flatten()[:-1])).reshape(vals.shape)
         print(valsleft,"\n")
@@ -270,10 +270,10 @@ def draw_pie():
         inner_colors = cmap([1, 2, 3, 5, 6, 7, 9, 10,11])
         
         #极坐标/直角坐标系情况下，参数含义分别如下:
-        #x:条形图的起始角度（以弧度为单位）  / X轴起始位置
-        #width:条形图的宽度（以弧度为单位） / 条形图宽度
+        #x:条形图的起始角度(以弧度为单位)  / X轴起始位置
+        #width:条形图的宽度(以弧度为单位) / 条形图宽度
         #bottom:条形图的起始半径。         / 条形图底部位置
-        #height:条形图的高度（即半径的增量）/ 条形图高度
+        #height:条形图的高度(即半径的增量)/ 条形图高度
         #color:条形图的填充颜色 / 同
         #edgecolor:条形图边框的颜色 /同
         #linewidth:条形图边框的宽度/ 同
@@ -290,7 +290,7 @@ def draw_pie():
 
         ax.set(title="nested pie chart")
 
-        #关闭当前坐标轴（axes）的所有轴线（包括刻度、标签和边框）
+        #关闭当前坐标轴(axes)的所有轴线(包括刻度、标签和边框)
         ax.set_axis_off()
         plt.show()
     elif mode == 3:
@@ -468,7 +468,7 @@ def draw_map(mode):
                 labels = ['Category 1', 'Category 2', 'Category 3']
                 colors = ['red', 'green', 'blue']
                 
-                # 计算饼图的中心位置（国家的几何中心）
+                # 计算饼图的中心位置(国家的几何中心)
                 centroid = row['geometry'].centroid
                 x, y = centroid.x, centroid.y
                 
@@ -728,6 +728,86 @@ def draw_voronoi(mode):
         dbg.dbg_info("err",1,"mode not matched!!\n")
     return
 
+# 金字塔图
+def draw_pyramid(mode):
+    if mode == "population":
+        # 示例数据：不同年龄组的男性和女性人口数量
+        age_groups = ['0-10', '11-20', '21-30', '31-40', '41-50', '51-60', '61+']
+        male_population = [100, 150, 200, 250, 300, 350, 400]
+        female_population = [120, 160, 210, 260, 310, 360, 410]
+
+        # 将男性人口数量取负值，以便在图中显示在左侧
+        male_population = [-x for x in male_population]
+
+        # 创建图形和轴
+        fig, ax = plt.subplots()
+
+        # 绘制男性人口
+        ax.barh(age_groups, male_population, color='blue', label='Male')
+        # 绘制女性人口
+        ax.barh(age_groups, female_population, color='pink', label='Female')
+
+        # 添加图例
+        ax.legend()
+
+        # 设置标题和标签
+        ax.set_xlabel('Population')
+        ax.set_ylabel('Age Group')
+        ax.set_title('Population Pyramid')
+
+        # 设置 x 轴的范围
+        ax.set_xlim(-450, 450)
+
+        # 显示网格
+        ax.grid(True)
+
+        # 显示图形
+        plt.show()
+    elif mode == "Maslow":  #Maslow's Hierarchy of Needs
+        # 马斯洛需求层次理论的五个层次及其描述
+        levels = [
+            "生理需求(Physiological Needs)",
+            "安全需求(Safety Needs)",
+            "爱与归属需求(Love and Belongingness Needs)",
+            "尊重需求(Esteem Needs)",
+            "自我实现需求(Self-Actualization Needs)"
+        ]
+
+        # 每个层次的宽度(可以调整以反映不同层次的重要性)
+        widths = [8, 6, 4, 2, 1]
+
+        # 创建图形和轴
+        fig, ax = plt.subplots()
+
+        # 绘制金字塔
+        for i, level in enumerate(levels):
+            ax.barh(i, widths[i], color='skyblue', edgecolor='black')
+
+        # 添加层次标签
+        for i, level in enumerate(levels):
+            ax.text(widths[i]+1, i, level, ha='left', 
+            va='center', fontsize=10, color='black')
+
+        # 设置图形范围和标签
+        ax.set_xlim(0, max(widths) + 1)
+        #ax.set_yticks(range(len(levels)))
+        #ax.set_yticklabels(levels)
+        ax.set_xlabel('需求层次')
+        ax.set_title('马斯洛需求层次理论金字塔图')
+
+        # 隐藏右侧和顶部的边框
+        ax.spines['right'].set_visible(False)
+        ax.spines['top'].set_visible(False)
+
+        #设置绘图风格,支持中文
+        plt.style.use('ggplot')
+        plt.rcParams['font.sans-serif'] = ['Microsoft YaHei']
+
+        # 显示图形
+        plt.show()
+    else:
+        dbg.dbg_info("err",1,"mode not matched!!\n")
+    return
 
 def main():
     #draw_histogram()
@@ -746,7 +826,8 @@ def main():
     #draw_bubble()
     #draw_venn()
     #draw_wordcloud()
-    draw_voronoi("2D")
+    #draw_voronoi("2D")
+    draw_pyramid("population")
     return
 
 if __name__ == '__main__':

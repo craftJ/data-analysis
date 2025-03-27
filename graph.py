@@ -37,6 +37,9 @@ from wordcloud import WordCloud
 from PIL import Image
 #for Voronoi图
 from scipy.spatial import Voronoi, voronoi_plot_2d
+#for Funnel图
+from pyecharts.charts import Funnel
+from pyecharts.faker import Faker
 #调试
 import debug as dbg
 
@@ -809,6 +812,19 @@ def draw_pyramid(mode):
         dbg.dbg_info("err",1,"mode not matched!!\n")
     return
 
+#漏斗图
+def draw_funnel():
+    import plotly.express as px
+    stages = ["Website visit", "Downloads", "Potential customers", "Requested price", "invoice sent"]
+    df_mtl = pd.DataFrame(dict(number=[39, 27.4, 20.6, 11, 3], stage=stages))
+    df_mtl['office'] = 'Montreal'
+    df_toronto = pd.DataFrame(dict(number=[52, 36, 18, 14, 5], stage=stages))
+    df_toronto['office'] = 'Toronto'
+    df = pd.concat([df_mtl, df_toronto], axis=0)
+    fig = px.funnel(df, x='number', y='stage', color='office')
+    fig.show()
+    return
+
 def main():
     #draw_histogram()
     #draw_hist()
@@ -827,7 +843,8 @@ def main():
     #draw_venn()
     #draw_wordcloud()
     #draw_voronoi("2D")
-    draw_pyramid("population")
+    #draw_pyramid("population")
+    draw_funnel()
     return
 
 if __name__ == '__main__':

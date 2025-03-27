@@ -18,6 +18,7 @@ import plotly.graph_objects as go
 
 # mpl_toolkits 并不是一个独立的 Python 包，而是 matplotlib 库
 from mpl_toolkits.mplot3d import Axes3D
+from mpl_toolkits.mplot3d.art3d import Poly3DCollection
 
 #for 地理相关绘图
 import geopandas as gpd
@@ -34,6 +35,10 @@ from upsetplot import generate_counts
 from wordcloud import WordCloud
 #for 图片处理
 from PIL import Image
+#for Voronoi图
+from scipy.spatial import Voronoi, voronoi_plot_2d
+#调试
+import debug as dbg
 
 
 rawdata_path = "./dataset"
@@ -686,6 +691,42 @@ def draw_wordcloud():
     plt.show()
     return
 
+#维诺图
+def draw_voronoi(mode):
+    if mode == "2D":
+        # 生成随机点
+        points = np.random.rand(20, 2)
+        # 计算维诺图
+        vor = Voronoi(points)
+        # 绘制维诺图
+        voronoi_plot_2d(vor)
+        plt.show()
+    elif mode == "3D":
+        # 生成随机点
+        points = np.random.rand(10, 3)  # 生成 10 个随机的 3D 点
+        # 计算维诺图
+        vor = Voronoi(points)
+        # 绘制维诺图
+        fig = plt.figure()
+        ax = fig.add_subplot(111, projection='3d')
+        # 绘制每个维诺单元
+        for simplex in vor.ridge_vertices:
+            if all(i >= 0 for i in simplex):  # 忽略无限远的边
+                poly = [vor.vertices[i] for i in simplex]
+                ax.add_collection3d(Poly3DCollection([poly], alpha=0.25))
+        # 绘制生成元点
+        ax.scatter(points[:, 0], points[:, 1], points[:, 2], color='red')
+
+        # 设置图形范围
+        ax.set_xlim(0, 1)
+        ax.set_ylim(0, 1)
+        ax.set_zlim(0, 1)
+
+        # 显示图形
+        plt.show()
+    else:
+        dbg.dbg_info("err",1,"mode not matched!!\n")
+    return
 
 
 def main():
@@ -704,7 +745,8 @@ def main():
     #draw_map(4)
     #draw_bubble()
     #draw_venn()
-    draw_wordcloud()
+    #draw_wordcloud()
+    draw_voronoi("3D")
     return
 
 if __name__ == '__main__':

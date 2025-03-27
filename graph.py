@@ -746,7 +746,7 @@ def main():
     #draw_bubble()
     #draw_venn()
     #draw_wordcloud()
-    draw_voronoi("3D")
+    draw_voronoi("2D")
     return
 
 if __name__ == '__main__':

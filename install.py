@@ -33,7 +33,9 @@ def install_packages():
         #用于生成词云图
         "wordcloud",
         #图像处理库，提供了广泛的图像处理功能，包括图像的打开、保存、裁剪、旋转、过滤等
-        "Pillow"
+        "Pillow",
+        #用于创建、操作和研究复杂网络的结构、动态和功能。它提供了丰富的功能，可以处理各种类型的图（如无向图、有向图、加权图等
+        "networkx"
     ]
     print("Python libs are installing...")
     for package in packages:

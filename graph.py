@@ -40,6 +40,11 @@ from scipy.spatial import Voronoi, voronoi_plot_2d
 #for Funnel图
 from pyecharts.charts import Funnel
 from pyecharts.faker import Faker
+#图结构处理
+import networkx as nx
+import squarify
+import string
+
 #调试
 import debug as dbg
 
@@ -825,6 +830,88 @@ def draw_funnel():
     fig.show()
     return
 
+#树形图
+def draw_tree():
+    import matplotlib.pyplot as plt
+    # 创建一个有向图
+    G = nx.DiGraph()
+
+    # 添加节点和边
+    # 假设我们有一个简单的树形结构
+    nodes = ["A", "B", "C", "D", "E", "F"]
+    edges = [("A", "B"), ("A", "C"), ("B", "D"), ("B", "E"), ("C", "F")]
+
+    G.add_nodes_from(nodes)
+    G.add_edges_from(edges)
+
+    # 使用Spring布局来排列节点
+    pos = nx.spring_layout(G, seed=42)
+
+    # 绘制图形
+    plt.figure(figsize=(8, 6))
+    nx.draw(G, pos, with_labels=True, node_size=700, node_color="skyblue", 
+        font_size=12, font_weight="bold", arrows=True)
+    plt.title("Tree Diagram", fontsize=14)
+    plt.show()
+
+    # 创建有向图
+    G = nx.DiGraph()
+    G.add_node("start", subset=0)
+    for i in range(2, 8):
+        G.add_node(str(i), subset=1)
+        G.add_edge("start", str(i))
+        G.add_edge(str(i), "end")
+        G.add_node("end", subset=2)
+
+    # 设置布局并绘制图形
+    pos = nx.multipartite_layout(G)
+    nx.draw_networkx(G, node_size=1000, pos=pos)
+    plt.show()
+
+    return
+
+#矩形树形图
+def draw_treemap():
+    # 随机10个分类，分类名称,颜色,数值,均随机
+    itemNums = 10
+    sizes = [random.randint(0, 1000) for i in range(itemNums)]
+    labels = ''.join(random.choice(string.ascii_letters) for _ in range(itemNums))  
+    colors = [("#" + "".join([random.choice("0123456789ABCDEF") for j in range(6)])) for _ in range(itemNums)]
+    # 绘制矩形树图
+    plt.figure(figsize=(8, 6))
+    squarify.plot(sizes=sizes, label=labels, color=colors, alpha=0.7)
+    plt.axis('off')
+    plt.title("Treemap with Squarify", fontsize=14)
+    plt.show()
+    return
+
+#人物关系图
+def draw_relationship():
+    import utils_random
+    roles = ['Alice','Bob', 'Charlie','David','Eve','Fiona','Gary','Tom','Jessy','Lucy']
+    relationships = utils_random.rand_relations(roles)
+
+    # 创建无向图
+    G = nx.Graph()
+
+    # 添加节点和边
+    for person, related in relationships.items():
+        G.add_node(person)  # 添加节点
+        for rel in related:
+            G.add_edge(person, rel)  # 添加边
+    
+    # 使用spring布局
+    pos = nx.spring_layout(G)
+
+    # 绘制图形
+    node_colors = ['red' if person == 'Alice' else 'skyblue' for person in G.nodes()]
+    nx.draw(G, pos, with_labels=True, node_color=node_colors, node_size=700, font_weight='bold', font_size=10)
+    plt.title('人物关系图')
+    plt.show()
+
+    return
+
+
 def main():
     #draw_histogram()
     #draw_hist()
@@ -844,7 +931,10 @@ def main():
     #draw_wordcloud()
     #draw_voronoi("2D")
     #draw_pyramid("population")
-    draw_funnel()
+    #draw_funnel()
+    #draw_tree()
+    #draw_treemap()
+    draw_relationship()
     return
 
 if __name__ == '__main__':

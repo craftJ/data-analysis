@@ -105,7 +105,7 @@ def draw_histogram():
     data = pd.Series(np.random.randn(17),index=list('abcdefghijklmnopq'))
     data.plot(kind='bar',ax=axes[0],color='red',alpha=0.7)
     data.plot(kind='barh',ax=axes[1],color='blue',alpha=0.7)
-    show(plt,1)
+    show(plt)
     return
 
 #直方图
@@ -115,7 +115,7 @@ def draw_hist():
     plt.title("Histogram")
     plt.xlabel("Value")
     plt.ylabel("Frequency")
-    show(plt,1)
+    show(plt)
     return
 
 #柱状图
@@ -126,7 +126,7 @@ def draw_bar():
     plt.title("Bar Chart")
     plt.xlabel("Category")
     plt.ylabel("Value")
-    show(plt,1)
+    show(plt)
     return
 
 #Kernel Density Estimation

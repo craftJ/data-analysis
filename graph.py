@@ -101,6 +101,10 @@ def load_dataset(name):
         file_path = os.path.join(local_tiger, 'online-shopping.xlsx')
         dataFrame = pd.read_excel(file_path)
 
+    elif name == 'penguins':
+        dataset = os.path.join(local_seaborn, 'penguins.csv')
+        dataFrame = pd.read_csv(dataset)
+
     else:
         dbg.dbg_info('err',1,"unknown dataset name!!\n")
 
@@ -237,9 +241,6 @@ def draw_violinplot():
     #原始数据读取
     data_read = load_dataset('shopping')
 
-    #设置绘图风格,支持中文
-    set_style_and_chinese(plt)
-
     #坐标轴负号的处理
     plt.rcParams['axes.unicode_minus']=False
     # 绘制分组小提琴图
@@ -256,6 +257,8 @@ def draw_violinplot():
                 split = True, # 将小提琴图从中间割裂开，形成不同的密度曲线；
                 palette = 'RdBu' # 指定不同性别对应的颜色(因为hue参数为设置为性别变量)
                 )
+    #设置绘图风格,支持中文
+    set_style_and_chinese(plt)
     # 添加图形标题
     plt.title('小提琴图(violin plot): 每月消费情况')
     # 设置图例
@@ -279,7 +282,7 @@ def draw_scatter_matrix():
         print(df)
     else:
         #采用本地seaborn数据集
-        df = pd.read_csv("./dataset/seaborn-data/penguins.csv")
+        df = load_dataset('penguins')
         df = df.iloc[:,0:4]
         print(df)
 
@@ -292,7 +295,15 @@ def draw_scatter_matrix():
         sns.pairplot(df, diag_kind='kde',kind='scatter')
         sns.pairplot(df, diag_kind='hist',kind='reg')
         '''
-        sns.pairplot(df, diag_kind='hist',kind='scatter',hue="species")
+        g = sns.pairplot(df, diag_kind='hist',kind='scatter',hue="species")
+
+        #设置绘图风格,支持中文
+        set_style_and_chinese(plt)
+        # 调整整体图形布局
+        g.figure.set_size_inches(10, 9)  # 设置整个图形对象的尺寸
+        g.figure.suptitle("散点矩阵图(scatter matrix):企鹅喙特征分析", y=0.95, fontsize=16) 
+        # 关键调整：增加顶部边距
+        plt.subplots_adjust(top=0.9)  # 保留10%的顶部空间
         show(plt)
     else:
         # 使用 pandas 绘制散点矩阵图作为比较，
@@ -1043,8 +1054,8 @@ def main():
     #draw_heatmap()
     #draw_boxplot()
     #draw_kde()
-    draw_violinplot()
-    #draw_scatter_matrix()
+    #draw_violinplot()
+    draw_scatter_matrix()
     #draw_hexbin()
     #draw_pie()
     #draw_area()

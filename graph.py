@@ -61,8 +61,9 @@ def show(plt,secs=None):
     return
 
 
-#直方图
-def draw_histogram():
+#柱状图
+#多用于多类数据数值比较
+def draw_bar():
     fig,axes = plt.subplots(2,1)
     data = pd.Series(np.random.randn(17),index=list('abcdefghijklmnopq'))
     data.plot(kind='bar',ax=axes[0],color='red',alpha=0.7)
@@ -71,23 +72,26 @@ def draw_histogram():
     return
 
 #直方图
-def draw_hist():
-    data = np.random.randn(1000)  # 生成随机数据
-    plt.hist(data, bins=30, color='blue', alpha=0.7)
-    plt.title("Histogram")
+#用于同类数据看分布
+def draw_histogram():
+    # 生成随机数据
+    data = np.random.randn(1000)  
+
+    #counts 是一个数组，表示每个直方图柱子（bin）的高度
+    #bins 是一个数组，表示直方图的边界
+    #patches 是一个包含 matplotlib.patches.Rectangle 对象的列表，每个 Rectangle 对应一个柱子。这些对象可以用于进一步自定义柱子的外观，例如设置颜色、边框等
+    counts,bins,patchs = plt.hist(data, bins=30, color='blue',edgecolor='white', alpha=0.7)
+    # 添加数值标签
+    for count, bin in zip(counts, bins):
+        plt.text(bin + (bins[1] - bins[0])/2, count, str(int(count)), ha='center', va='bottom')
+
+    #设置绘图风格,支持中文
+    plt.style.use('ggplot')
+    plt.rcParams['font.sans-serif'] = ['Microsoft YaHei']
+
+    plt.title("直方图(Histogram)")
     plt.xlabel("Value")
     plt.ylabel("Frequency")
-    show(plt)
-    return
-
-#柱状图
-def draw_bar():
-    categories = ['A', 'B', 'C', 'D']
-    values = [10, 15, 7, 5]
-    plt.bar(categories, values, color='green', alpha=0.7)
-    plt.title("Bar Chart")
-    plt.xlabel("Category")
-    plt.ylabel("Value")
     show(plt)
     return
 
@@ -953,8 +957,7 @@ def draw_pareto():
 
 
 def main():
-    #draw_histogram()
-    #draw_hist()
+    draw_histogram()
     #draw_bar()
     #draw_heatmap()
     #draw_boxplot()
@@ -975,7 +978,7 @@ def main():
     #draw_tree()
     #draw_treemap()
     #draw_relationship()
-    draw_pareto()
+    #draw_pareto()
     return
 
 if __name__ == '__main__':

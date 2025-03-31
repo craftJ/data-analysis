@@ -11,7 +11,7 @@
 #TODO:
 # pyinstaller打包后的程序运行失败，提示“no such file or directory   map_filename.json”
 # 添加标题，X轴说明，Y轴说明，图例说明，统一为中英双语，数值显示， 色系统一风格
-# 直方图留一个
+# [done] 直方图留一个
 # 整个UI主题颜色换深色，高端
 # 箱线图美化，略显简单，扩充随机模块
 # 概率密度图美化，显示字符重叠问题解决
@@ -58,6 +58,7 @@ class DemoUI:
         self.root.geometry("800x600")
         
         # 设置ttkbootstrap主题
+        # 配色参考： https://ttkbootstrap.readthedocs.io/en/latest/zh/themes/light/
         self.style = tb.Style(theme="flatly")
         
         # 创建主框架

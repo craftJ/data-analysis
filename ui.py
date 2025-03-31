@@ -1,6 +1,46 @@
 # -*- coding: utf-8 -*-
 # UI界面
 
+#关于打包的说明：
+#pyinstaller -F -i .\exefile.ico -w ui.py
+#遇到的问题说明：
+#1. PyInstaller 默认不会包含 Python 包中的数据文件。这点类似APP打包，需要手动指定非代码资源
+#    你需要使用 --add-data 参数手动指定这些文件
+#    使用命令： --add-data SOURCE:DEST，SOURCE：源文件或目录的路径。可以是单个文件或整个目录。DEST：目标路径，即在打包后的可执行文件中，这些文件或目录将被放置的位置
+
+#TODO:
+# pyinstaller打包后的程序运行失败，提示“no such file or directory   map_filename.json”
+# 添加标题，X轴说明，Y轴说明，图例说明，统一为中英双语，数值显示， 色系统一风格
+# 直方图留一个
+# 整个UI主题颜色换深色，高端
+# 箱线图美化，略显简单，扩充随机模块
+# 概率密度图美化，显示字符重叠问题解决
+# 小提琴图无法显示，提示 openpyxl库没有
+# 六边形箱图，添加对应的实际物理含义
+# 饼图美化，色系，图例叠加，拆分两个，单饼图，嵌套饼图
+# 热力图显示函数自动关闭演示关闭
+# 面积图换函数，换成多折线图，带比例占比显示
+# sankey图依赖web显示，加载慢问题解决，统一展示位置，而不是弹窗到web
+# 地图，依赖函数传参，缺少mode参数调用失败，需要支持函数参数界面输入
+# 气泡图的数据看不懂， readme更新，每个图增加示例及数据集说明
+# 集合图，打印了两次，串口有告警信息，色系黑白没有统一， 
+# 词云图，换数据集，自定义数据集
+# 维诺图，依赖函数传参，缺少mode参数调用失败，需要支持函数参数界面输入
+# 金字塔图，依赖函数传参，缺少mode参数调用失败，需要支持函数参数界面输入
+# 漏斗图，依赖web，统一显示风格
+# 树图，连续打了两个，风格太丑
+# 矩形树图有bug，随机了两个类型名称一样
+# 人物关系图有bug，同一对人之间，随机出来有多条线，并且太丑
+# 动态排名图，GDP数据没转换，太长了
+# 动态折线图，需要做多个折线，表示比较和增长，最好用一个硬盘，ssd的销量数据来做
+# 所有图的左上角UI有一个figure1，需要修改自定义
+# 函数模块，依赖函数传参，缺少type参数导致失败
+# 函数模块，最好是实现成用户可以自定义函数，然后，读取定义，然后生成曲线；
+# 动态图内容太少
+# 函数图内容太少
+# 终端的调试打印去除
+
+
 import tkinter as tk
 from tkinter import ttk
 import ttkbootstrap as tb
@@ -10,21 +50,6 @@ import curves
 import dynamic
 import graph
 import debug as dbg
-
-
-# 模拟的函数，实际使用时替换为您的工具库函数
-def show_static_graph():
-    print("展示静态图功能")
-
-def show_dynamic_graph():
-    print("展示动态图功能")
-
-def show_function_graph():
-    print("展示函数图功能")
-
-def show_function_graph1():
-    print("展示函数图功能1111")
-
 
 class DemoUI:
     def __init__(self, root):
@@ -226,65 +251,6 @@ if __name__ == "__main__":
     root.mainloop()
 
 
-
-
-'''
-def main():
-    # 创建主窗口
-    root = tk.Tk()
-    root.title("Tkinter")
-
-    # 创建按钮
-    button = tk.Button(root, text="y=sin(x)", command=lambda: curves.draw_curve("sin"))
-    button.pack(pady=10)
-
-    button = tk.Button(root, text="helix", command=lambda: curves.draw_curve("helix"))
-    button.pack(pady=10)
-
-    # 创建标签用于显示结果
-    result_label = tk.Label(root, text="", font=("Arial", 12))
-    result_label.pack(pady=20)
-
-    # 运行主循环
-    root.mainloop()
-
-
-    root = ttk.Window()
-    style = ttk.Style()
-    theme_names = style.theme_names()#以列表的形式返回多个主题名
-    theme_selection = ttk.Frame(root, padding=(10, 10, 10, 0))
-    theme_selection.pack(fill=X, expand=YES)
-    lbl = ttk.Label(theme_selection, text="选择主题:")
-    theme_cbo = ttk.Combobox(
-            master=theme_selection,
-            text=style.theme.name,
-            values=theme_names,
-    )
-    theme_cbo.pack(padx=10, side=RIGHT)
-    theme_cbo.current(theme_names.index(style.theme.name))
-    lbl.pack(side=RIGHT)
-    def change_theme(event):
-        theme_cbo_value = theme_cbo.get()
-        style.theme_use(theme_cbo_value)
-        theme_selected.configure(text=theme_cbo_value)
-        theme_cbo.selection_clear()
-    theme_cbo.bind('<<ComboboxSelected>>', change_theme)
-    theme_selected = ttk.Label(
-            master=theme_selection,
-            text="litera",
-            font="-size 24 -weight bold"
-    )
-    theme_selected.pack(side=LEFT)
-    root.mainloop()
-
-
-
-    return
-
-if __name__ == '__main__':
-    main()
-
-'''
 
 
 

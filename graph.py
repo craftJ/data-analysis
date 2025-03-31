@@ -60,6 +60,38 @@ def show(plt,secs=None):
         plt.show()
     return
 
+
+#直方图
+def draw_histogram():
+    fig,axes = plt.subplots(2,1)
+    data = pd.Series(np.random.randn(17),index=list('abcdefghijklmnopq'))
+    data.plot(kind='bar',ax=axes[0],color='red',alpha=0.7)
+    data.plot(kind='barh',ax=axes[1],color='blue',alpha=0.7)
+    show(plt)
+    return
+
+#直方图
+def draw_hist():
+    data = np.random.randn(1000)  # 生成随机数据
+    plt.hist(data, bins=30, color='blue', alpha=0.7)
+    plt.title("Histogram")
+    plt.xlabel("Value")
+    plt.ylabel("Frequency")
+    show(plt)
+    return
+
+#柱状图
+def draw_bar():
+    categories = ['A', 'B', 'C', 'D']
+    values = [10, 15, 7, 5]
+    plt.bar(categories, values, color='green', alpha=0.7)
+    plt.title("Bar Chart")
+    plt.xlabel("Category")
+    plt.ylabel("Value")
+    show(plt)
+    return
+
+
 #箱线图
 def draw_boxplot():
     x = np.random.randn(1000)
@@ -97,36 +129,6 @@ def draw_heatmap():
     ax.set_xlabel('x label') 
     ax.set_ylabel('y label')
     show(plt,2)
-    return
-
-#直方图
-def draw_histogram():
-    fig,axes = plt.subplots(2,1)
-    data = pd.Series(np.random.randn(17),index=list('abcdefghijklmnopq'))
-    data.plot(kind='bar',ax=axes[0],color='red',alpha=0.7)
-    data.plot(kind='barh',ax=axes[1],color='blue',alpha=0.7)
-    show(plt)
-    return
-
-#直方图
-def draw_hist():
-    data = np.random.randn(1000)  # 生成随机数据
-    plt.hist(data, bins=30, color='blue', alpha=0.7)
-    plt.title("Histogram")
-    plt.xlabel("Value")
-    plt.ylabel("Frequency")
-    show(plt)
-    return
-
-#柱状图
-def draw_bar():
-    categories = ['A', 'B', 'C', 'D']
-    values = [10, 15, 7, 5]
-    plt.bar(categories, values, color='green', alpha=0.7)
-    plt.title("Bar Chart")
-    plt.xlabel("Category")
-    plt.ylabel("Value")
-    show(plt)
     return
 
 #Kernel Density Estimation

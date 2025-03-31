@@ -49,8 +49,6 @@ import string
 import debug as dbg
 
 
-rawdata_path = "./dataset"
-
 def show(plt,secs=None):
     if secs is not None:
         plt.show(block=False)
@@ -60,6 +58,54 @@ def show(plt,secs=None):
         plt.show()
     return
 
+#设置绘图风格,设置支持中文
+def set_style_and_chinese(plt):
+    #显示所有支持的style
+    #print(plt.style.available)
+    plt.style.use('seaborn-v0_8-pastel')
+    plt.rcParams['font.sans-serif'] = ['FangSong']
+    return
+
+#本地数据集加载
+def load_dataset(name):
+    local_seaborn = r"./dataset/seaborn-data"
+    local_tiger = r"./dataset/tiger-data"
+    dataFrame = None
+    if name == 'iris':
+        # === 1. 加载本地数据集 ===
+        try:
+            # 从当前目录读取CSV文件（根据实际路径调整）
+            dataset = os.path.join(local_seaborn, 'iris.csv')
+            iris_df = pd.read_csv(dataset)
+            # 检查数据是否加载成功
+            if iris_df.empty:
+                raise FileNotFoundError("文件为空或格式不正确")
+            iris_df['species'] = iris_df['species'].astype(str)
+            print("数据加载成功！前5行示例：")
+            print(iris_df.head())
+        except FileNotFoundError:
+            # 如果文件不存在，从网络加载备用数据
+            print("本地文件未找到，改用sklearn内置数据集")
+            from sklearn.datasets import load_iris
+            iris = load_iris()
+            iris_df = pd.DataFrame(iris.data, columns=iris.feature_names)
+            iris_df['species'] = [iris.target_names[i] for i in iris.target]
+
+        # === 2. 数据预处理 ===
+        # 统一列名格式（如果本地文件列名不同）
+        iris_df.columns = iris_df.columns.str.lower().str.replace(' ', '_')
+        dataFrame = iris_df
+        print("\n可用特征列：", iris_df.columns.tolist())
+
+    elif name == 'shopping':
+        file_path = os.path.join(local_tiger, 'online-shopping.xlsx')
+        dataFrame = pd.read_excel(file_path)
+
+    else:
+        dbg.dbg_info('err',1,"unknown dataset name!!\n")
+
+    return dataFrame
+
 
 #柱状图
 #多用于多类数据数值比较
@@ -68,7 +114,23 @@ def draw_bar():
     data = pd.Series(np.random.randn(17),index=list('abcdefghijklmnopq'))
     data.plot(kind='bar',ax=axes[0],color='red',alpha=0.7)
     data.plot(kind='barh',ax=axes[1],color='blue',alpha=0.7)
+
+    #设置绘图风格,支持中文
+    set_style_and_chinese(plt)
+
+    axes[0].set_title('垂直柱状图(Vertical Bar Chart)')  # 设置标题
+    axes[0].set_xlabel('Categories')         # 设置x轴标签
+    axes[0].set_ylabel('Values')             # 设置y轴标签
+
+    axes[1].set_title('水平柱状图(Horizontal Bar Chart)')  # 设置标题
+    axes[1].set_xlabel('Values')               # 设置x轴标签
+    axes[1].set_ylabel('Categories')           # 设置y轴标签
+
+    # 调整子图间距防止标签重叠
+    plt.tight_layout()
+
     show(plt)
+
     return
 
 #直方图
@@ -86,22 +148,11 @@ def draw_histogram():
         plt.text(bin + (bins[1] - bins[0])/2, count, str(int(count)), ha='center', va='bottom')
 
     #设置绘图风格,支持中文
-    plt.style.use('ggplot')
-    plt.rcParams['font.sans-serif'] = ['Microsoft YaHei']
+    set_style_and_chinese(plt)
 
     plt.title("直方图(Histogram)")
     plt.xlabel("Value")
     plt.ylabel("Frequency")
-    show(plt)
-    return
-
-
-#箱线图
-def draw_boxplot():
-    x = np.random.randn(1000)
-    y = np.random.randn(500)
-    z = np.random.randn(1500)
-    plt.boxplot((x, y, z), labels=('x', 'y', 'z'),patch_artist=True,showmeans=True,)
     show(plt)
     return
 
@@ -112,7 +163,7 @@ def draw_heatmap():
     values = np.random.uniform(0, 1000, size=(arry_size, arry_size))
 
     # 使用列表推导式生成x轴和y轴的定义
-    x_prefix = "name-"
+    x_prefix = "City-"
     y_prefix = "vaule-"
     x_ticks = [f"{x_prefix}{i+1}" for i in range(arry_size)]
     y_ticks = [f"{y_prefix}{i+1}" for i in range(arry_size)]
@@ -129,36 +180,66 @@ def draw_heatmap():
     #Reds:从浅红到深红的渐变
     #_r后缀:表示颜色和值反向映射
     ax = sns.heatmap(values, xticklabels=x_ticks, yticklabels=y_ticks, cmap="Blues")
-    ax.set_title('Heatmap') 
-    ax.set_xlabel('x label') 
-    ax.set_ylabel('y label')
-    show(plt,2)
+
+    #设置绘图风格,支持中文
+    set_style_and_chinese(plt)
+    ax.set_title('热力图(Heatmap)') 
+    ax.set_xlabel('Location') 
+    ax.set_ylabel('Population density')
+    show(plt)
+    return
+
+
+#箱线图
+def draw_boxplot():
+    #随机生成不同月份的销售数据
+    df = pd.DataFrame({
+        'Jan': np.random.normal(100, 20, 50),
+        'Feb': np.random.normal(120, 25, 50),
+        'Mar': np.random.normal(90, 15, 50)
+    })
+
+    sns.boxplot(df)
+    set_style_and_chinese(plt)
+    plt.title("箱线图(Box Plot)")
+    plt.xlabel("Months")
+    plt.ylabel("SalesCount")
+    plt.show()
     return
 
 #Kernel Density Estimation
 def draw_kde():
-    #随机样本点
-    dataset = np.array([10,2,-2,22,1,3,6,19,7,3,16,5,12,0])
-    fig, ax = plt.subplots(figsize=(10, 4))
-    #绘制kde
-    sns.kdeplot(ax=ax, data=dataset, bw_adjust=0.3)
-    #标注样本点位置及注解
-    ax.plot(dataset, np.zeros_like(dataset)+0.05, 's', markersize=8, color='black')
-    for index, x in enumerate(dataset):
-        ax.annotate(r'$x_{}$'.format(index + 1), xy=[x, 0.04], horizontalalignment='center', fontsize=12)
+    #采用iris数据集
+    dataset = load_dataset('iris')
+
+    plt.figure(figsize=(10, 6))
+    sns.kdeplot(
+        data=dataset,
+        x='petal_length',
+        hue='species',
+        fill=True,
+        legend=True,
+        alpha=0.3,
+        palette='viridis',
+        bw_adjust=0.8  # 带宽调整
+    )
+    set_style_and_chinese(plt)
+    plt.title('不同物种的花瓣长度概率密度分布', fontsize=14)
+    plt.xlabel('花瓣长度 (cm)')
+    plt.ylabel('概率密度')
+    #这里需要手动添加图例，按照图显顺序应该是['setosa','versicolor','virginica'],但如此传入后图例是相反的
+    plt.legend(title='物种',labels=['virginica','versicolor','setosa'])
     plt.show()
     return
 
 #小提琴图
 def draw_violinplot():
     #原始数据读取
-    data_path = rawdata_path
-    file_name = r"tiger-data/online-shopping.xlsx"
-    file_path = os.path.join(data_path, file_name)
-    data_read = pd.read_excel(file_path)
+    data_read = load_dataset('shopping')
+
     #设置绘图风格,支持中文
-    plt.style.use('ggplot')
-    plt.rcParams['font.sans-serif'] = ['Microsoft YaHei']
+    set_style_and_chinese(plt)
+
     #坐标轴负号的处理
     plt.rcParams['axes.unicode_minus']=False
     # 绘制分组小提琴图
@@ -176,7 +257,7 @@ def draw_violinplot():
                 palette = 'RdBu' # 指定不同性别对应的颜色(因为hue参数为设置为性别变量)
                 )
     # 添加图形标题
-    plt.title('每月消费情况')
+    plt.title('小提琴图(violin plot): 每月消费情况')
     # 设置图例
     plt.legend(loc = 'upper left', ncol = 2)
     # 显示图形
@@ -957,12 +1038,12 @@ def draw_pareto():
 
 
 def main():
-    draw_histogram()
+    #draw_histogram()
     #draw_bar()
     #draw_heatmap()
     #draw_boxplot()
     #draw_kde()
-    #draw_violinplot()
+    draw_violinplot()
     #draw_scatter_matrix()
     #draw_hexbin()
     #draw_pie()

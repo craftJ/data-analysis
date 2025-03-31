@@ -38,7 +38,9 @@ def install_packages():
         "networkx",
         "squarify",
         #UI框架
-        "ttkbootstrap"
+        "ttkbootstrap",
+        #读取excel
+        "openpyxl"
     ]
     print("Python libs are installing...")
     for package in packages:

@@ -911,6 +911,44 @@ def draw_relationship():
 
     return
 
+#帕累托图
+def draw_pareto():
+    # 示例数据
+    categories = ['A', 'B', 'C', 'D', 'E']
+    values = [23, 45, 12, 8, 67]
+
+    # 按值从大到小排序
+    sorted_indices = np.argsort(values)[::-1]
+    categories = [categories[i] for i in sorted_indices]
+    values = [values[i] for i in sorted_indices]
+
+    # 计算累积百分比
+    cumulative_percentage = np.cumsum(values) / sum(values) * 100
+
+    # 绘制柱状图
+    fig, ax1 = plt.subplots()
+
+    ax1.bar(categories, values, color='skyblue')
+    ax1.set_xlabel('Categories')
+    ax1.set_ylabel('Frequency', color='tab:blue')
+    ax1.tick_params(axis='y', labelcolor='tab:blue')
+
+    # 绘制折线图
+    ax2 = ax1.twinx()
+    ax2.plot(categories, cumulative_percentage, color='tab:red', marker='o', linestyle='--')
+    ax2.set_ylabel('Cumulative Percentage', color='tab:red')
+    ax2.set_ylim(0, 100)
+    ax2.tick_params(axis='y', labelcolor='tab:red')
+
+    # 添加网格线
+    ax1.grid(axis='y', linestyle='--', alpha=0.7)
+
+    # 添加标题
+    plt.title('Pareto Chart')
+
+    # 显示图表
+    plt.show()
+
 
 def main():
     #draw_histogram()
@@ -934,7 +972,8 @@ def main():
     #draw_funnel()
     #draw_tree()
     #draw_treemap()
-    draw_relationship()
+    #draw_relationship()
+    draw_pareto()
     return
 
 if __name__ == '__main__':

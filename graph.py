@@ -64,6 +64,7 @@ def set_style_and_chinese(plt):
     #print(plt.style.available)
     plt.style.use('seaborn-v0_8-pastel')
     plt.rcParams['font.sans-serif'] = ['FangSong']
+    plt.rcParams['axes.unicode_minus'] = False
     return
 
 #本地数据集加载
@@ -329,7 +330,7 @@ def draw_pie():
     #mode == 1: 简单饼图
     #mode == 2：嵌套饼图(使用bar，极坐标系方式绘制叠加)
     #mode == 3：嵌套饼图(使用pie绘制叠加)
-    mode = 3
+    mode = 4
     if mode == 1:
         fig, ax = plt.subplots(figsize=(6, 3), subplot_kw=dict(aspect="equal"))
         recipe = ["375 g flour",
@@ -409,9 +410,10 @@ def draw_pie():
         outer_labels = ['纺织品', '稀土', '大豆', '芯片', '天然气', '武器', '电子', '汽车']
 
         plt.figure(figsize=(10, 10))
-        #设置绘图风格,支持中文
-        plt.style.use('ggplot')
-        plt.rcParams['font.sans-serif'] = ['Microsoft YaHei']
+
+        #支持中文
+        set_style_and_chinese(plt)
+
         # 绘制内层饼图
         plt.pie(inner_x,
         labels=inner_labels,
@@ -431,6 +433,169 @@ def draw_pie():
         '#c7fdb5', '#aaff32', '#b9a281', '#d8dcd6'],
         wedgeprops=dict(width=0.5, edgecolor='white'))
         plt.legend(inner_labels, fontsize=15)
+        plt.show()
+
+    elif mode == 4:
+        import matplotlib.pyplot as plt
+        import numpy as np
+        from matplotlib.patches import Circle, ConnectionPatch
+        from matplotlib import patheffects
+
+        # 设置全局样式
+        set_style_and_chinese(plt)
+
+        # 数据准备
+        categories = ['电子产品', '服装', '食品', '家居', '其他']
+        outer_values = [35, 25, 15, 20, 5]
+        sub_categories = ['手机', '电脑', '配件', 
+                        '男装', '女装', '童装', 
+                        '生鲜', '零食', '饮品', 
+                        '家具', '装饰', '厨具',
+                        '其他']
+        inner_values = [15, 10, 10, 8, 7, 10, 5, 5, 5, 8, 7, 5, 5]
+
+        # 颜色方案 - 使用专业配色
+        outer_colors = ['#4285F4', '#EA4335', '#FBBC05', '#34A853', '#9E9E9E']
+        inner_colors = ['#8AB4F8', '#F28B82', '#FDDF7F', 
+                    '#81C995', '#C5A5CF', '#F7B7A3',
+                    '#FFD166', '#06D6A0', '#118AB2',
+                    '#EF476F', '#FFC43D', '#1B9AAA',
+                    '#6C757D']
+
+        # 创建图形
+        fig, ax = plt.subplots(figsize=(10, 8), facecolor='#f8f9fa')
+        fig.patch.set_alpha(0.9)
+
+        # ========== 绘制外层饼图 ==========
+        wedges_outer, _ = ax.pie(outer_values, radius=1.4, 
+                                colors=outer_colors,
+                                startangle=90,
+                                wedgeprops=dict(width=0.5, 
+                                            edgecolor='white', 
+                                            linewidth=3,
+                                            linestyle='-'))
+
+        # ========== 绘制内层饼图 ==========
+        wedges_inner, _ = ax.pie(inner_values, radius=0.8, 
+                                colors=inner_colors,
+                                startangle=90,
+                                wedgeprops=dict(width=0.5, 
+                                            edgecolor='white', 
+                                            linewidth=2))
+
+        # ========== 数据标注优化 ==========
+        def get_percentage_string(value, total=sum(outer_values)):
+            """格式化百分比字符串"""
+            percent = value / total * 100
+            return f"{value}({percent:.1f}%)"
+
+        # 外层标注 - 使用曲线连接线
+        for i, (wedge, color) in enumerate(zip(wedges_outer, outer_colors)):
+            # 计算标注位置
+            angle = (wedge.theta2 + wedge.theta1) / 2
+            x = 1.35 * np.cos(np.deg2rad(angle))
+            y = 1.35 * np.sin(np.deg2rad(angle))
+            
+            # 添加主标签
+            label = ax.annotate(
+                f"{categories[i]}\n{get_percentage_string(outer_values[i])}",
+                xy=(x, y),
+                xytext=(1.6 * np.sign(x), 1.6 * np.sign(y)),
+                textcoords='data',
+                ha='center',
+                va='center',
+                fontsize=12,
+                fontweight='bold',
+                color=color,
+                bbox=dict(
+                    boxstyle='round,pad=0.5',
+                    fc='white',
+                    ec=color,
+                    lw=2,
+                    alpha=0.9
+                )
+            )
+            
+            # 添加装饰性连接线
+            con = ConnectionPatch(
+                xyA=(x, y), 
+                xyB=label.get_position(),
+                coordsA="data", 
+                coordsB="data",
+                axesA=ax, 
+                axesB=ax,
+                arrowstyle="-",
+                shrinkA=5,
+                shrinkB=5,
+                linewidth=1.5,
+                linestyle="--",
+                color=color,
+                alpha=0.7
+            )
+            ax.add_artist(con)
+
+        # 内层标注 - 仅显示较大比例的项
+        threshold = 1  # 只显示大于此值的子类
+        for i, (wedge, value) in enumerate(zip(wedges_inner, inner_values)):
+            if value >= threshold:
+                angle = (wedge.theta2 + wedge.theta1) / 2
+                x = 0.65 * np.cos(np.deg2rad(angle))
+                y = 0.65 * np.sin(np.deg2rad(angle))
+                
+                ax.annotate(
+                    f"{sub_categories[i]}\n{value}%",
+                    xy=(x, y),
+                    xytext=(1.1*x, 1.1*y),
+                    ha='center',
+                    va='center',
+                    fontsize=9,
+                    color='white',
+                    path_effects=[
+                        patheffects.withStroke(linewidth=2, foreground='black')
+                    ]
+                )
+
+        # ========== 中心装饰 ==========
+        centre_circle = Circle((0, 0), 0.35, fc='white', ec='#4285F4', linewidth=4)
+        ax.add_patch(centre_circle)
+
+        # 添加中心标题
+        plt.text(0, 0.05, '销售\n构成', 
+                ha='center', va='center', 
+                fontsize=24, fontweight='bold', 
+                color='#4285F4',
+                linespacing=1.5)
+
+        plt.text(0, -0.15, '单位: %', 
+                ha='center', va='center', 
+                fontsize=10, 
+                color='#666666')
+
+        # ========== 图例优化 ==========
+        # 创建自定义图例
+        from matplotlib.lines import Line2D
+        legend_elements = [
+            Line2D([0], [0], marker='o', color='w', label=categories[i],
+                markerfacecolor=outer_colors[i], markersize=12) 
+            for i in range(len(categories))
+        ]
+        legend = ax.legend(handles=legend_elements, 
+                        title="产品类别",
+                        loc='upper left',
+                        bbox_to_anchor=(0.85, 1),
+                        frameon=True,
+                        framealpha=0.9,
+                        edgecolor='#dddddd')
+        legend.get_title().set_fontweight('bold')
+
+        # ========== 标题和装饰 ==========
+        plt.title('2023年度产品销售结构分析\n', 
+                fontsize=20, fontweight='bold', 
+                color='#2F4F4F', pad=30)
+
+        # 调整布局和保存
+        plt.tight_layout()
+        #plt.savefig('enhanced_donut_chart.png', dpi=300, bbox_inches='tight', transparent=True)
         plt.show()
     return
 
@@ -1055,9 +1220,9 @@ def main():
     #draw_boxplot()
     #draw_kde()
     #draw_violinplot()
-    draw_scatter_matrix()
+    #draw_scatter_matrix()
     #draw_hexbin()
-    #draw_pie()
+    draw_pie()
     #draw_area()
     #draw_sankey()
     #draw_map(4)

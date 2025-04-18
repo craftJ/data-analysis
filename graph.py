@@ -467,6 +467,7 @@ def draw_pie():
         fig.patch.set_alpha(0.9)
 
         # ========== 绘制外层饼图 ==========
+        # wedges：一个 matplotlib.patches.Wedge 对象的列表，每个 Wedge 对象表示饼图中的一个扇区wedge
         wedges_outer, _ = ax.pie(outer_values, radius=1.4, 
                                 colors=outer_colors,
                                 startangle=90,
@@ -493,14 +494,15 @@ def draw_pie():
         for i, (wedge, color) in enumerate(zip(wedges_outer, outer_colors)):
             # 计算标注位置
             angle = (wedge.theta2 + wedge.theta1) / 2
-            x = 1.35 * np.cos(np.deg2rad(angle))
-            y = 1.35 * np.sin(np.deg2rad(angle))
+            x = 1 * np.cos(np.deg2rad(angle))
+            y = 1 * np.sin(np.deg2rad(angle))
+            print("i:", i, categories[i]," ",x," ",y)
             
             # 添加主标签
             label = ax.annotate(
                 f"{categories[i]}\n{get_percentage_string(outer_values[i])}",
                 xy=(x, y),
-                xytext=(1.6 * np.sign(x), 1.6 * np.sign(y)),
+                xytext=(0.9 * np.sign(x), 0.9 * np.sign(y)),
                 textcoords='data',
                 ha='center',
                 va='center',
@@ -515,7 +517,7 @@ def draw_pie():
                     alpha=0.9
                 )
             )
-            
+            '''
             # 添加装饰性连接线
             con = ConnectionPatch(
                 xyA=(x, y), 
@@ -533,6 +535,7 @@ def draw_pie():
                 alpha=0.7
             )
             ax.add_artist(con)
+            '''
 
         # 内层标注 - 仅显示较大比例的项
         threshold = 1  # 只显示大于此值的子类
@@ -582,7 +585,7 @@ def draw_pie():
         legend = ax.legend(handles=legend_elements, 
                         title="产品类别",
                         loc='upper left',
-                        bbox_to_anchor=(0.85, 1),
+                        bbox_to_anchor=(1.1, 1),
                         frameon=True,
                         framealpha=0.9,
                         edgecolor='#dddddd')
@@ -591,7 +594,7 @@ def draw_pie():
         # ========== 标题和装饰 ==========
         plt.title('2023年度产品销售结构分析\n', 
                 fontsize=20, fontweight='bold', 
-                color='#2F4F4F', pad=30)
+                color='#2F4F4F', pad=40)
 
         # 调整布局和保存
         plt.tight_layout()

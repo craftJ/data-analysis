@@ -54,7 +54,7 @@ import debug as dbg
 class DemoUI:
     def __init__(self, root):
         self.root = root
-        self.root.title("数据分析及绘图工具库演示")
+        self.root.title("python绘图百宝箱")
         self.root.geometry("800x600")
         
         # 设置ttkbootstrap主题
@@ -68,7 +68,7 @@ class DemoUI:
         # 标题
         self.title_label = tb.Label(
             self.main_frame, 
-            text="数据分析及绘图工具库演示", 
+            text="python绘图百宝箱", 
             font=('Helvetica', 18, 'bold'),
             bootstyle=PRIMARY
         )

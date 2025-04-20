@@ -322,6 +322,14 @@ def draw_hexbin():
     df = pd.DataFrame(np.random.randn(1000, 2), columns=['a', 'b'])
     df['b'] = df['b'] + np.arange(1000)
     df.plot.hexbin(x='a', y='b', gridsize=25)
+
+    #设置绘图风格,支持中文
+    set_style_and_chinese(plt)
+    # 添加标题和坐标轴说明
+    plt.title('六边形箱图', fontsize=16)  # 添加标题
+    plt.xlabel('city', fontsize=12)  # 添加 x 轴说明
+    plt.ylabel('degree', fontsize=12)  # 添加 y 轴说明
+
     show(plt)
     return
 
@@ -1224,8 +1232,8 @@ def main():
     #draw_kde()
     #draw_violinplot()
     #draw_scatter_matrix()
-    #draw_hexbin()
-    draw_pie()
+    draw_hexbin()
+    #draw_pie()
     #draw_area()
     #draw_sankey()
     #draw_map(4)

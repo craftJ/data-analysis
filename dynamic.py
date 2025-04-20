@@ -141,6 +141,7 @@ def draw_dynamic_rankbar():
         bar = nim.Barplot(
             df, "%Y", "1YE", post_update=None, rounded_edges=False, grid=True, n_bars=20
         )
+        set_style_and_chinese(plt)
         bar.set_title("动态排名图 - Countries' GDP Rank", color="black",x=0.3,weight=500,size=20)
         bar.set_time(
             callback=lambda i, datafier: datafier.data.index[i].strftime("%Y"), 
@@ -176,7 +177,7 @@ def draw_dynamic_rankbar():
 
 
 def main():
-    draw_dynamic_linechart()
+    #draw_dynamic_linechart()
     draw_dynamic_rankbar()
     return
 

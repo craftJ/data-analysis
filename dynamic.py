@@ -17,6 +17,17 @@ import pynimate as nim
 #用于调试
 import debug as dbg
 
+
+#设置绘图风格,设置支持中文
+def set_style_and_chinese(plt):
+    #显示所有支持的style
+    #print(plt.style.available)
+    plt.style.use('seaborn-v0_8-pastel')
+    plt.rcParams['font.sans-serif'] = ['FangSong']
+    plt.rcParams['axes.unicode_minus'] = False
+    return
+
+
 #动态折线图
 def draw_dynamic_linechart(): 
     mode = 1
@@ -48,10 +59,13 @@ def draw_dynamic_linechart():
 
         # 创建动画,interval调整帧间隔ms，以调整显示速度
         ani = FuncAnimation(fig, update, 
-                            frames=len(time_dense), init_func=init, blit=True, interval=50)
+                            frames=len(time_dense), init_func=init, blit=True, interval=5)
                             #frames=len(time_dense), init_func=init, blit=True)
         # 显示动画
+        set_style_and_chinese(plt)
+        plt.title("动态折线图",fontsize=16)
         plt.show()
+        #ani.save('./docs/dynamicLine.gif', writer='pillow', fps=10)
     elif mode == 2:
         # 生成示例数据
         np.random.seed(0)
@@ -86,7 +100,7 @@ def draw_dynamic_rankbar():
         #plt.rcParams['axes.unicode_minus'] = False
         dbg.dbg_pwd()
         # 读取数据
-        datapath = r'E:\code\datanaysis\data-analysis\dataset\tiger-data'
+        datapath = r'./dataset/tiger-data'
         dataset= os.path.join(datapath, 'gdp.csv')
         dbg.dbg_info("info",1,dataset)
         df_data = pd.read_csv(dataset, encoding='utf-8',
@@ -127,7 +141,7 @@ def draw_dynamic_rankbar():
         bar = nim.Barplot(
             df, "%Y", "1YE", post_update=None, rounded_edges=False, grid=True, n_bars=20
         )
-        bar.set_title("Countries' GDP Rank", color="black",x=0.3,weight=500,size=20)
+        bar.set_title("动态排名图 - Countries' GDP Rank", color="black",x=0.3,weight=500,size=20)
         bar.set_time(
             callback=lambda i, datafier: datafier.data.index[i].strftime("%Y"), 
             color="w", y=0.2, size=20
@@ -162,7 +176,7 @@ def draw_dynamic_rankbar():
 
 
 def main():
-    #draw_dynamic_linechart()
+    draw_dynamic_linechart()
     draw_dynamic_rankbar()
     return
 

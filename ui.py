@@ -151,6 +151,7 @@ class DemoUI:
             ("散点图", graph.draw_scatter_matrix),
             ("六边形箱图", graph.draw_hexbin),
             ("饼图", graph.draw_pie),
+            ("嵌套饼图", graph.draw_multipie),
             ("热力图", graph.draw_heatmap),
             ("面积图", graph.draw_area),
             ("桑基图", graph.draw_sankey),

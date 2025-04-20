@@ -215,8 +215,10 @@ class DemoUI:
         """创建函数图模块的界面"""
         #功能函数
         curves_functions_list = [
-            ("正弦函数", curves.draw_curve),
-            ("螺旋线", curves.draw_curve),
+            ("正弦函数", curves.draw_curve_sin),
+            ("余弦线", curves.draw_curve_cos),
+            ("螺旋线函数", curves.draw_curve_helix),
+            ("自定义函数", curves.draw_curve_custom),
             ]
         # 说明标签
         desc_label = tb.Label(

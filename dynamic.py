@@ -65,7 +65,7 @@ def draw_dynamic_linechart():
         set_style_and_chinese(plt)
         plt.title("动态折线图",fontsize=16)
         plt.show()
-        #ani.save('./docs/dynamicLine.gif', writer='pillow', fps=10)
+        #ani.save('./result/dynamicLine.gif', writer='pillow', fps=10)
     elif mode == 2:
         # 生成示例数据
         np.random.seed(0)
@@ -165,7 +165,7 @@ def draw_dynamic_rankbar():
         cnv.animate(interval = 100)
         plt.show()
         # 保存为 GIF
-        #cnv.save("./docs/Country-GDP-Rank", 300, "gif") 
+        #cnv.save("./result/Country-GDP-Rank", 300, "gif") 
     elif mode == 2:
         dbg.dbg_info("info",0,"unkown mode!!!")
     elif mode == 3:

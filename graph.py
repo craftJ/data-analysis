@@ -12,11 +12,11 @@ import os
 import random
 from scipy.interpolate import interp1d
 from scipy.stats import norm
-# 用plotly是交互式的sankey图，web端弹出页面后可以交互显示数据详细信息,plotly很强大，交互式的地图，还可以伸缩，旋转！！
+# 用plotly是交互式的sankey图,web端弹出页面后可以交互显示数据详细信息,plotly很强大,交互式的地图,还可以伸缩,旋转！！
 import plotly.express as px
 import plotly.graph_objects as go
 
-# mpl_toolkits 并不是一个独立的 Python 包，而是 matplotlib 库
+# mpl_toolkits 并不是一个独立的 Python 包,而是 matplotlib 库
 from mpl_toolkits.mplot3d import Axes3D
 from mpl_toolkits.mplot3d.art3d import Poly3DCollection
 
@@ -75,7 +75,7 @@ def load_dataset(name):
     if name == 'iris':
         # === 1. 加载本地数据集 ===
         try:
-            # 从当前目录读取CSV文件（根据实际路径调整）
+            # 从当前目录读取CSV文件(根据实际路径调整)
             dataset = os.path.join(local_seaborn, 'iris.csv')
             iris_df = pd.read_csv(dataset)
             # 检查数据是否加载成功
@@ -85,15 +85,15 @@ def load_dataset(name):
             print("数据加载成功！前5行示例：")
             print(iris_df.head())
         except FileNotFoundError:
-            # 如果文件不存在，从网络加载备用数据
-            print("本地文件未找到，改用sklearn内置数据集")
+            # 如果文件不存在,从网络加载备用数据
+            print("本地文件未找到,改用sklearn内置数据集")
             from sklearn.datasets import load_iris
             iris = load_iris()
             iris_df = pd.DataFrame(iris.data, columns=iris.feature_names)
             iris_df['species'] = [iris.target_names[i] for i in iris.target]
 
         # === 2. 数据预处理 ===
-        # 统一列名格式（如果本地文件列名不同）
+        # 统一列名格式(如果本地文件列名不同)
         iris_df.columns = iris_df.columns.str.lower().str.replace(' ', '_')
         dataFrame = iris_df
         print("\n可用特征列：", iris_df.columns.tolist())
@@ -144,9 +144,9 @@ def draw_histogram():
     # 生成随机数据
     data = np.random.randn(1000)  
 
-    #counts 是一个数组，表示每个直方图柱子（bin）的高度
-    #bins 是一个数组，表示直方图的边界
-    #patches 是一个包含 matplotlib.patches.Rectangle 对象的列表，每个 Rectangle 对应一个柱子。这些对象可以用于进一步自定义柱子的外观，例如设置颜色、边框等
+    #counts 是一个数组,表示每个直方图柱子(bin)的高度
+    #bins 是一个数组,表示直方图的边界
+    #patches 是一个包含 matplotlib.patches.Rectangle 对象的列表,每个 Rectangle 对应一个柱子。这些对象可以用于进一步自定义柱子的外观,例如设置颜色、边框等
     counts,bins,patchs = plt.hist(data, bins=30, color='blue',edgecolor='white', alpha=0.7)
     # 添加数值标签
     for count, bin in zip(counts, bins):
@@ -173,13 +173,13 @@ def draw_heatmap():
     x_ticks = [f"{x_prefix}{i+1}" for i in range(arry_size)]
     y_ticks = [f"{y_prefix}{i+1}" for i in range(arry_size)]
     
-    # 绘制热力图，设置标题及坐标名称
+    # 绘制热力图,设置标题及坐标名称
     #viridis:从深蓝到黄绿色的渐变。
     #plasma:从深红到黄色的渐变。
     #inferno:从黑色到红色的渐变。
     #magma:从黑色到橙色的渐变。
     #cividis:从深蓝到黄色的渐变。
-    #coolwarm:从蓝色到红色的渐变，中间为白色。
+    #coolwarm:从蓝色到红色的渐变,中间为白色。
     #RdBu:从红色到蓝色的渐变。
     #Blues:从浅蓝到深蓝的渐变。
     #Reds:从浅红到深红的渐变
@@ -229,10 +229,10 @@ def draw_kde():
         bw_adjust=0.8  # 带宽调整
     )
     set_style_and_chinese(plt)
-    plt.title('不同物种的花瓣长度概率密度分布', fontsize=14)
+    plt.title('概率密度图(KDE plot) - 花瓣长度概率密度分布', fontsize=14)
     plt.xlabel('花瓣长度 (cm)')
     plt.ylabel('概率密度')
-    #这里需要手动添加图例，按照图显顺序应该是['setosa','versicolor','virginica'],但如此传入后图例是相反的
+    #这里需要手动添加图例,按照图显顺序应该是['setosa','versicolor','virginica'],但如此传入后图例是相反的
     plt.legend(title='物种',labels=['virginica','versicolor','setosa'])
     plt.show()
     return
@@ -255,7 +255,7 @@ def draw_violinplot():
                 order = ['pdd','jingdong','taobao'],
                 #order = ['lisa','joe','tom','jerry','james'],
                 density_norm='count',#
-                split = True, # 将小提琴图从中间割裂开，形成不同的密度曲线；
+                split = True, # 将小提琴图从中间割裂开,形成不同的密度曲线；
                 palette = 'RdBu' # 指定不同性别对应的颜色(因为hue参数为设置为性别变量)
                 )
     #设置绘图风格,支持中文
@@ -289,8 +289,8 @@ def draw_scatter_matrix():
 
     if 1:
         # 使用 seaborn 绘制散点矩阵图,对角线显示核密度估计
-        #kind:用于控制非对角线上的图的类型，可选"scatter"与"reg",对应散点，拟合回归线
-        #diag_kind:控制对角线上的图的类型，可选"hist"与"kde"，对应直方图，概率密度估计
+        #kind:用于控制非对角线上的图的类型,可选"scatter"与"reg",对应散点,拟合回归线
+        #diag_kind:控制对角线上的图的类型,可选"hist"与"kde",对应直方图,概率密度估计
         '''
         sns.pairplot(df, diag_kind='kde',kind='reg')
         sns.pairplot(df, diag_kind='kde',kind='scatter')
@@ -307,8 +307,8 @@ def draw_scatter_matrix():
         plt.subplots_adjust(top=0.9)  # 保留10%的顶部空间
         show(plt)
     else:
-        # 使用 pandas 绘制散点矩阵图作为比较，
-        # 跟想象的不一样，不同的库绘制出来的视觉效果还是比较大的，
+        # 使用 pandas 绘制散点矩阵图作为比较,
+        # 跟想象的不一样,不同的库绘制出来的视觉效果还是比较大的,
         # 并且这里的直方图同seaborn的有较大差异
         '''
         pd.plotting.scatter_matrix(df, diagonal='kde')
@@ -326,7 +326,7 @@ def draw_hexbin():
     #设置绘图风格,支持中文
     set_style_and_chinese(plt)
     # 添加标题和坐标轴说明
-    plt.title('六边形箱图', fontsize=16)  # 添加标题
+    plt.title('六边形箱图(Hex bin)', fontsize=16)  # 添加标题
     plt.xlabel('city', fontsize=12)  # 添加 x 轴说明
     plt.ylabel('degree', fontsize=12)  # 添加 y 轴说明
 
@@ -359,7 +359,7 @@ def draw_pie():
             loc="center left",
             #bbox_to_anchor 的参数可以是一个元组 (x, y) 或 (x, y, width, height)。
             # 具体含义如下：
-            #(x, y)：指定锚点的坐标，相对于 loc 参数指定的位置。
+            #(x, y)：指定锚点的坐标,相对于 loc 参数指定的位置。
             #(x, y, width, height)：指定锚点的坐标以及边界框的宽度和高度。
             bbox_to_anchor=(0.95, 0, 0.5, 1))
 
@@ -367,14 +367,14 @@ def draw_pie():
     set_style_and_chinese(plt)
     # 添加标题和坐标轴说明
     plt.setp(autotexts, size=10, weight="bold")
-    plt.title('简单饼图-烘培食物占比', fontsize=16)
+    plt.title('简单饼图(Pie)-烘培食物占比', fontsize=16)
     plt.show()
     return
 
 
 #嵌套饼图
 def draw_multipie():
-    #mode == 1：嵌套饼图(使用bar，极坐标系方式绘制叠加)
+    #mode == 1：嵌套饼图(使用bar,极坐标系方式绘制叠加)
     #mode == 2：嵌套饼图(使用pie绘制叠加)
     mode = 1
     if mode == 1:
@@ -389,19 +389,19 @@ def draw_multipie():
         valsnorm = vals/np.sum(vals)*2*np.pi
         print(valsnorm,"\n")
         # Obtain the ordinates of the bar edges
-        # 在极坐标系下，条形图的“ordinates”(纵坐标)实际上是指条形的半径边界值。
-        # 注意！！这里使用flatten转换后再cumsum不断累加，达到了不同分类占用弧度的不断累加，方便得到每个大类的开始弧度位置
+        # 在极坐标系下,条形图的“ordinates”(纵坐标)实际上是指条形的半径边界值。
+        # 注意！！这里使用flatten转换后再cumsum不断累加,达到了不同分类占用弧度的不断累加,方便得到每个大类的开始弧度位置
         valsleft = np.cumsum(np.append(0, valsnorm.flatten()[:-1])).reshape(vals.shape)
         print(valsleft,"\n")
 
         #饼图颜色映射
         cmap = plt.colormaps["tab20c"]
-        #大类颜色，0,4,8
+        #大类颜色,0,4,8
         outer_colors = cmap(np.arange(3)*4)
-        #子类颜色，分布在大类区间范围，可以使同类色系一致
+        #子类颜色,分布在大类区间范围,可以使同类色系一致
         inner_colors = cmap([1, 2, 3, 5, 6, 7, 9, 10,11])
         
-        #极坐标/直角坐标系情况下，参数含义分别如下:
+        #极坐标/直角坐标系情况下,参数含义分别如下:
         #x:条形图的起始角度(以弧度为单位)  / X轴起始位置
         #width:条形图的宽度(以弧度为单位) / 条形图宽度
         #bottom:条形图的起始半径。         / 条形图底部位置
@@ -410,7 +410,7 @@ def draw_multipie():
         #edgecolor:条形图边框的颜色 /同
         #linewidth:条形图边框的宽度/ 同
         #align:条形图的对齐方式。/同
-        # 取valsleft第一列，绘制最外圈的大分类，宽度为valsnorm中每行相加，实际就是子类的弧度相加
+        # 取valsleft第一列,绘制最外圈的大分类,宽度为valsnorm中每行相加,实际就是子类的弧度相加
         ax.bar(x=valsleft[:, 0],
             width=valsnorm.sum(axis=1), bottom=1-size, height=size,
             color=outer_colors, edgecolor='w', linewidth=1, align="edge")
@@ -418,19 +418,19 @@ def draw_multipie():
         # 添加标注信息
         for i, (left, width) in enumerate(zip(valsleft[:, 0], valsnorm.sum(axis=1))):
             # 计算标注的位置
-            x = left + width / 2  # 标注的 x 坐标（条形的中心）
-            y = 1 - size / 2  # 标注的 y 坐标（条形的中心）
+            x = left + width / 2  # 标注的 x 坐标(条形的中心)
+            y = 1 - size / 2  # 标注的 y 坐标(条形的中心)
             # 添加标注
             ax.annotate(f"{width:.2f}",  # 标注文本
                         xy=(x, y),  # 标注的位置
-                        xytext=(0, 5),  # 文本的偏移量（相对于标注位置）
+                        xytext=(0, 5),  # 文本的偏移量(相对于标注位置)
                         textcoords="offset points",  # 文本的坐标系统
                         ha='center',  # 水平对齐方式
                         va='bottom',  # 垂直对齐方式
                         fontsize=12,  # 字体大小
                         color='white')  # 字体颜色
 
-        # 取valsleft所有元素，按照行优先二维转一维，绘制所有子类占比，宽度为子类各自的归一化弧度
+        # 取valsleft所有元素,按照行优先二维转一维,绘制所有子类占比,宽度为子类各自的归一化弧度
         ax.bar(x=valsleft.flatten(),
             width=valsnorm.flatten(), bottom=1-2*size, height=size,
             color=inner_colors, edgecolor='w', linewidth=1, align="edge")
@@ -438,12 +438,12 @@ def draw_multipie():
         # 添加标注信息
         for i, (left, width) in enumerate(zip(valsleft.flatten(), valsnorm.flatten())):
             # 计算标注的位置
-            x = left + width / 2  # 标注的 x 坐标（条形的中心）
-            y = 1 - 2 * size + size / 2  # 标注的 y 坐标（条形的中心）
+            x = left + width / 2  # 标注的 x 坐标(条形的中心)
+            y = 1 - 2 * size + size / 2  # 标注的 y 坐标(条形的中心)
             # 添加标注
             ax.annotate(f"{width:.2f}",  # 标注文本
                         xy=(x, y),  # 标注的位置
-                        xytext=(0.1, 0.1),  # 文本的偏移量（相对于标注位置）
+                        xytext=(0.1, 0.1),  # 文本的偏移量(相对于标注位置)
                         textcoords="offset points",  # 文本的坐标系统
                         ha='center',  # 水平对齐方式
                         va='bottom',  # 垂直对齐方式
@@ -454,7 +454,7 @@ def draw_multipie():
         set_style_and_chinese(plt)
         #关闭当前坐标轴(axes)的所有轴线(包括刻度、标签和边框)
         ax.set_axis_off()
-        plt.title("嵌套饼图 - 销售数据", fontsize=16)  # 添加标题
+        plt.title("嵌套饼图(nested pie) - 销售数据", fontsize=16)  # 添加标题
         plt.show()
     elif mode == 2:
         import matplotlib.pyplot as plt
@@ -469,9 +469,9 @@ def draw_multipie():
 
         # 饼图颜色映射
         cmap = plt.colormaps["tab20c"]
-        #大类颜色，0,4,8
+        #大类颜色,0,4,8
         outer_colors = cmap(np.arange(4)*4)
-        #子类颜色，分布在大类区间范围，可以使同类色系一致
+        #子类颜色,分布在大类区间范围,可以使同类色系一致
         inner_colors = cmap([1, 2, 5,6, 8,9, 10, 11])
 
         plt.figure(figsize=(10, 10))
@@ -496,7 +496,7 @@ def draw_multipie():
         wedgeprops=dict(width=0.5, edgecolor='white'))
         #设置绘图风格,支持中文
         set_style_and_chinese(plt)
-        plt.title("嵌套饼图 - 假设的国际贸易出口数据", fontsize=16)  # 添加标题
+        plt.title("嵌套饼图(nested pie) - 假设的国际贸易出口", fontsize=16)  # 添加标题
         plt.legend(inner_labels, fontsize=15)
         plt.show()
     else:
@@ -518,9 +518,10 @@ def draw_area():
     plt.fill_between(x, y2, color='red', alpha=0.5)
 
     # 添加标题和标签
-    plt.title('Area Plot')
-    plt.xlabel('x')
-    plt.ylabel('y')
+    set_style_and_chinese(plt)
+    plt.title('面积图(Area Plot)')
+    plt.xlabel('Time')
+    plt.ylabel('Value')
     plt.legend()
 
     # 显示图形
@@ -544,13 +545,14 @@ def draw_sankey():
         for diagram in diagrams:
             diagram.text.set_fontweight('bold')
         # 显示图形
-        plt.title('Sankey Diagram')
+        set_style_and_chinese(plt)
+        plt.title('桑基图(Sankey Diagram)')
         plt.show()
     elif mode == 2:
         # 定义数据
         labels = ["A", "B", "C", "D", "E"]
 
-        # source和target成对应关系，这里的定义，索引为0的流向了索引为1，索引为2的两部分
+        # source和target成对应关系,这里的定义,索引为0的流向了索引为1,索引为2的两部分
         source = [0, 0, 1, 2, 3]  # 源节点索引
         target = [1, 2, 3, 3, 4]  # 目标节点索引
         value = [10, 15, 20, 5, 10]  # 流量值
@@ -570,10 +572,10 @@ def draw_sankey():
                 value=value
             )
         )])
-
+        set_style_and_chinese(plt)
         # 更新布局
         fig.update_layout(
-            title_text="Sankey Diagram",
+            title_text="桑基图(Sankey Diagram)",
             font_size=16,
             height=600,
             width=800
@@ -586,7 +588,8 @@ def draw_sankey():
     return
 
 #地图
-def draw_map(mode):
+def draw_map():
+    mode = 1
     if mode == 1:
         # 加载数据
         df = px.data.gapminder().query("country=='China'")
@@ -595,13 +598,14 @@ def draw_map(mode):
                             hover_name="country", size="gdpPercap",
                             animation_frame="year", projection="natural earth")
         # 添加标题
-        fig.update_layout(title="World Map using Plotly")
+        set_style_and_chinese(plt)
+        fig.update_layout(title="世界地图(World Map)")
 
         # 显示图形
         fig.show()
     elif mode == 2:
         # 加载世界地图数据
-        # 问题：AttributeError: module 'fiona' has no attribute 'path'，geopandas==0.13.2，fiona==1.10.0
+        # 问题：AttributeError: module 'fiona' has no attribute 'path',geopandas==0.13.2,fiona==1.10.0
         # 解决：更新geopandas==0.14.4或固定fiona到版本1.9.6
         # pip show fiona 查看版本号
         # pip install fiona==1.9.6 安装指定版本
@@ -635,7 +639,7 @@ def draw_map(mode):
         # 绘制世界地图底图
         world.plot(ax=ax, color='lightblue', edgecolor='black', alpha=0.5)
 
-        # 遍历每个国家，绘制符号饼图
+        # 遍历每个国家,绘制符号饼图
         for idx, row in world.iterrows():
             if pd.notnull(row['category1']):  # 确保数据存在
                 # 获取分类数据
@@ -668,7 +672,7 @@ def draw_map(mode):
             '2017年': [86.3, 75.7, 58.3, 58.3, 49.9, 43.6, 41.2, 41.1, 36.5, 36.5, 36.2, 33.0, 31.9, 31.7, 29.3, 29.1, 28.5,
                     21.1, 20.8, 19.8, 18.8, 18.8, 18.4, 14.3, 6.9, 6.0, 5.7, 5.7, 5.0, 4.6, 2.8]
         }            
-        # 数据处理，将省份名称和对应的高考人数组成元组列表 
+        # 数据处理,将省份名称和对应的高考人数组成元组列表 
         province_data = [(province, num) for province, num in zip(data['省/市'], data['2017年'])]
         # 使用 Map 类生成地图
         china_map = (
@@ -683,7 +687,7 @@ def draw_map(mode):
             )
         )
         # 生成本地html文件 
-        # 问题！！，依赖外部js文件，网络屏蔽后会导致显示空白
+        # 问题！！,依赖外部js文件,网络屏蔽后会导致显示空白
         china_map.render("./dataset/tiger-data/中国高考人数地图.html")
 
     elif mode == 4:
@@ -691,14 +695,14 @@ def draw_map(mode):
         #countries = r'./dataset/tiger-data/ne_110m/ne_110m_admin_0_countries.shp'
         #cities = r'./dataset/tiger-data/ne_110m/ne_110m_admin_1_states_provinces.shp'
         world = gpd.read_file(gpd.datasets.get_path('naturalearth_lowres'))
-        # 人口，大洲，国名，国家缩写，ISO国家代码，gdp，地理位置数据
+        # 人口,大洲,国名,国家缩写,ISO国家代码,gdp,地理位置数据
         # 检查数据集的列名
         print("Columns in the GeoDataFrame:", world.columns)
         # 查看数据
         print(world.head())
-        # 问题！！！，geopandas已更新，对应的自带数据集合以及world接口方法存在变化,此处去除南极洲失败
+        # 问题！！！,geopandas已更新,对应的自带数据集合以及world接口方法存在变化,此处去除南极洲失败
         # 'GeoDataFrame' object has no attribute 'pop_est'
-        # 使用 pip install GeoPandas==0.10.2 ，该库固定到0.10.2版本可以支持
+        # 使用 pip install GeoPandas==0.10.2 ,该库固定到0.10.2版本可以支持
         # 去除南极地区
         world = world[(world.pop_est>0) & (world.name!="Antarctica")]
         # 计算人均gpd
@@ -727,48 +731,54 @@ def draw_bubble():
     for i, txt in enumerate(countries):
         plt.annotate(txt, (unemployment_rate[i], gdp[i]), fontsize=9)
 
-    plt.xlabel('Unemployment Rate (%)')
+    set_style_and_chinese(plt)
+    plt.xlabel('失业率-Unemployment Rate (%)')
     plt.ylabel('GDP (Trillion USD)')
-    plt.title('GDP vs Unemployment Rate with Population Size')
+    plt.title('气泡图(Bubble) - GDP vs Unemployment Rate with Population Size')
     plt.grid(True)
     plt.show()
     return
 
 #韦恩图
 def draw_venn():
+    #3个以内的集合直接使用venn库,超出三个的venn不支持,
+    #接口如此设计是合理的,venn上太多的圈,不方便清晰的展示多个圈之间的关系,
+    # 你就想要表示1个圈和其他3个圈的交集就很不好绘制了
+    # 定义3个随机集合,定义集合的大小范围
+    arry_size = 20
+    min_value = 1
+    max_value = 100
+    set_a = {random.randint(min_value, max_value) 
+            for _ in range(arry_size)}
+    
+    arry_size = 100
+    min_value = 50
+    max_value = 150
+    set_b = {random.randint(min_value, max_value) 
+            for _ in range(arry_size)}
+    
+    arry_size = 80
+    min_value = 25
+    max_value = 200
+    set_c = {random.randint(min_value, max_value) 
+            for _ in range(arry_size)}
+
+    # 绘制维恩图, 3个集合就是venn3
+    venn3([set_a, set_b, set_c], set_labels=('Set A', 'Set B','Set C'), 
+        set_colors=('red', 'blue', 'yellow'), alpha=0.5)
+
+    # 添加标题
+    set_style_and_chinese(plt)
+    plt.title('韦恩图(Venn Diagram)', fontsize=16)
+
+    # 显示图表
+    plt.show()
+    return
+
+#多集合图
+def draw_upset(): 
     mode = 2
-    #3个以内的集合直接使用venn库，超出三个的venn不支持,
-    #接口如此设计是合理的，venn上太多的圈，不方便清晰的展示多个圈之间的关系,你就想要表示1个圈和其他3个圈的交集就很不好绘制了
-    if mode == 1:
-        # 定义3个随机集合,定义集合的大小范围
-        arry_size = 20
-        min_value = 1
-        max_value = 100
-        set_a = {random.randint(min_value, max_value) 
-                for _ in range(arry_size)}
-        
-        arry_size = 100
-        min_value = 50
-        max_value = 150
-        set_b = {random.randint(min_value, max_value) 
-                for _ in range(arry_size)}
-        
-        arry_size = 80
-        min_value = 25
-        max_value = 200
-        set_c = {random.randint(min_value, max_value) 
-                for _ in range(arry_size)}
-
-        # 绘制维恩图, 3个集合就是venn3
-        venn3([set_a, set_b, set_c], set_labels=('Set A', 'Set B','Set C'), 
-            set_colors=('red', 'blue', 'yellow'), alpha=0.5)
-
-        # 添加标题
-        plt.title('Custom Venn Diagram', fontsize=16)
-
-        # 显示图表
-        plt.show()
-    elif mode == 2:        
+    if mode == 1:      
         # demo 1, 使用generate_counts构造
         example = generate_counts()
         if isinstance(example.index, pd.MultiIndex):
@@ -788,7 +798,7 @@ def draw_venn():
             True   False     429
                     True     1957
         Name: value, dtype: int64
-        [重要！！！]  用于绘图的分类需要作为索引，且为BOOL型组合
+        [重要！！！]  用于绘图的分类需要作为索引,且为BOOL型组合
         Level 0 (cat0): [False, True]
         Level 1 (cat1): [False, True]
         Level 2 (cat2): [False, True]
@@ -803,9 +813,10 @@ def draw_venn():
         upset_plot(example)
         plt.title('UpSet Plot of Four Sets')
         plt.show()     
-
+    elif mode == 2:
+        from upsetplot import generate_counts, plot
         # demo 2, 自定义构造
-        # 生成随机集合，注意这里不能是list，会导致随机出现重复值，导致绘图失败
+        # 生成随机集合,注意这里不能是list,会导致随机出现重复值,导致绘图失败
         set_a = {random.randint(1, 100) for _ in range(random.randint(10, 50))}
         set_b = {random.randint(50, 150) for _ in range(random.randint(10, 60))}
         set_c = {random.randint(90, 200) for _ in range(random.randint(10, 80))}
@@ -818,8 +829,8 @@ def draw_venn():
         data = {"A":set_a,"B":set_b,"C":set_c,"D":set_d}
 
         # 转换为upsetplot需要的格式
-        # [重要！！！] data的格式，需要是一个字典，
-        # 其中键是集合名称，值是集合中包含的元素列表。这些元素必须是 int 或 str 格式,且单个集合中元素不能出现重复
+        # [重要！！！] data的格式,需要是一个字典,
+        # 其中键是集合名称,值是集合中包含的元素列表。这些元素必须是 int 或 str 格式,且单个集合中元素不能出现重复
         upset_data = from_contents(data)
         print(upset_data)
 
@@ -829,11 +840,15 @@ def draw_venn():
         else:
             print("索引不是 MultiIndex")
         # 绘制 UpSetPlot
-        upset_plot(upset_data)
-        plt.title('UpSet Plot of Four Sets')
+        plot(upset_data, facecolor="darkblue")
+        #upset_plot(upset_data)
+        set_style_and_chinese(plt)
+        # 使用 seaborn-darkgrid 样式表
+        #print(plt.style.available)
+        plt.title('多集合图(UpSet Plot)', fontsize=16)
         plt.show()
     else:
-        print("unknown mode!!")
+        print("unknow mode!!")
     return
 
 
@@ -841,12 +856,15 @@ def draw_venn():
 def draw_wordcloud():
     # 示例文本数据
     text = """
-    Python 是一种高级编程语言，具有简洁的语法和强大的功能。
-    Python 可以用于 Web 开发、数据分析、人工智能等多个领域。
-    Python 的语法简洁明了，易于学习和使用。
+    人工智能(Artificial Intelligence,简称AI)是计算机科学的重要分支,旨在模拟和扩展人类的智能。
+    通过机器学习、深度学习、自然语言处理等技术,AI能够执行复杂任务,如图像识别、语音交互、数据分析和
+    决策支持。近年来,随着算法优化和算力提升,AI已广泛应用于医疗、金融、教育、交通等领域,
+    显著提高了效率并推动了创新。然而,AI的发展也带来伦理和社会挑战,如隐私保护、就业影响等。
+    未来,AI将继续深化与人类社会的融合,在增强人类能力的同时,也需要合理的监管与引导,
+    以实现科技与人文的平衡发展
     """
     # 创建词云对象
-    # [注意！！！] 此处需要配置指定中文字体路径，否则会导致中文显示乱码
+    # [注意！！！] 此处需要配置指定中文字体路径,否则会导致中文显示乱码
     font_path = "C:\\Windows\\Fonts\\msyh.ttc"  # 微软雅黑字体路径
     wordcloud = WordCloud(
         font_path=font_path,
@@ -856,18 +874,21 @@ def draw_wordcloud():
         max_words=100,  # 最大显示的词数
         min_font_size=10,  # 最小字体大小
         max_font_size=100,  # 最大字体大小
-        random_state=42  # 随机种子，用于生成可重复的结果
+        random_state=42  # 随机种子,用于生成可重复的结果
     ).generate(text)
 
     # 显示词云图
     plt.figure(figsize=(10, 5))
     plt.imshow(wordcloud, interpolation='bilinear')
+    set_style_and_chinese(plt)
+    plt.title('词云图(Word Cloud)', fontsize=16)
     plt.axis('off')  # 关闭坐标轴
     plt.show()
     return
 
 #维诺图
-def draw_voronoi(mode):
+def draw_voronoi():
+    mode = "2D"
     if mode == "2D":
         # 生成随机点
         points = np.random.rand(20, 2)
@@ -875,6 +896,8 @@ def draw_voronoi(mode):
         vor = Voronoi(points)
         # 绘制维诺图
         voronoi_plot_2d(vor)
+        set_style_and_chinese(plt)
+        plt.title('维诺图(Voronoi)', fontsize=16)
         plt.show()
     elif mode == "3D":
         # 生成随机点
@@ -898,20 +921,23 @@ def draw_voronoi(mode):
         ax.set_zlim(0, 1)
 
         # 显示图形
+        set_style_and_chinese(plt)
+        plt.title('维诺图(Voronoi)', fontsize=16)
         plt.show()
     else:
         dbg.dbg_info("err",1,"mode not matched!!\n")
     return
 
 # 金字塔图
-def draw_pyramid(mode):
+def draw_pyramid():
+    mode = "population"
     if mode == "population":
         # 示例数据：不同年龄组的男性和女性人口数量
         age_groups = ['0-10', '11-20', '21-30', '31-40', '41-50', '51-60', '61+']
         male_population = [100, 150, 200, 250, 300, 350, 400]
         female_population = [120, 160, 210, 260, 310, 360, 410]
 
-        # 将男性人口数量取负值，以便在图中显示在左侧
+        # 将男性人口数量取负值,以便在图中显示在左侧
         male_population = [-x for x in male_population]
 
         # 创建图形和轴
@@ -928,15 +954,13 @@ def draw_pyramid(mode):
         # 设置标题和标签
         ax.set_xlabel('Population')
         ax.set_ylabel('Age Group')
-        ax.set_title('Population Pyramid')
-
         # 设置 x 轴的范围
         ax.set_xlim(-450, 450)
-
         # 显示网格
         ax.grid(True)
-
         # 显示图形
+        set_style_and_chinese(plt)
+        plt.title('金字塔图(Pyramid) - Population', fontsize=16)
         plt.show()
     elif mode == "Maslow":  #Maslow's Hierarchy of Needs
         # 马斯洛需求层次理论的五个层次及其描述
@@ -994,52 +1018,61 @@ def draw_funnel():
     df_toronto['office'] = 'Toronto'
     df = pd.concat([df_mtl, df_toronto], axis=0)
     fig = px.funnel(df, x='number', y='stage', color='office')
+    # 添加标题
+    fig.update_layout(
+        title={
+            'text': "漏斗图(Funnel) - 客户转化率",  # 标题文本
+            'y': 0.95,  # 标题的 y 位置
+            'x': 0.5,  # 标题的 x 位置
+            'xanchor': 'center',  # 标题的水平锚点
+            'yanchor': 'top'  # 标题的垂直锚点
+        }
+    )
     fig.show()
     return
 
 #树形图
 def draw_tree():
+    import networkx as nx
     import matplotlib.pyplot as plt
     # 创建一个有向图
     G = nx.DiGraph()
-
     # 添加节点和边
-    # 假设我们有一个简单的树形结构
-    nodes = ["A", "B", "C", "D", "E", "F"]
-    edges = [("A", "B"), ("A", "C"), ("B", "D"), ("B", "E"), ("C", "F")]
-
+    nodes = ["Root", 
+             "Child 1", "Child 2", 
+             "Grand 1.1", "Grand 1.2",
+             "Grand 2.1", "Grand 2.2",
+             "Great-Grand 1.1.1","Great-Grand 1.1.2",
+             "Great-Grand 2.1.1", "Great-Grand 2.1.2"]
+    edges = [("Root", "Child 1"),
+            ("Root", "Child 2"),
+            ("Child 1", "Grand 1.1"),
+            ("Child 1", "Grand 1.2"),
+            ("Child 2", "Grand 2.1"),
+            ("Child 2", "Grand 2.2"),
+            ("Grand 1.1", "Great-Grand 1.1.1"),
+            ("Grand 1.1", "Great-Grand 1.1.2"),
+            ("Grand 2.1", "Great-Grand 2.1.1"),
+            ("Grand 2.1", "Great-Grand 2.1.2")]
     G.add_nodes_from(nodes)
     G.add_edges_from(edges)
 
     # 使用Spring布局来排列节点
-    pos = nx.spring_layout(G, seed=42)
-
-    # 绘制图形
-    plt.figure(figsize=(8, 6))
+    #pos = nx.spring_layout(G, seed=42)
+    plt.figure(figsize=(10, 10))    
+    set_style_and_chinese(plt)
+    plt.title('树形图(Tree Diagram) - 继承关系', fontsize=16)
+    pos = nx.planar_layout(G)
     nx.draw(G, pos, with_labels=True, node_size=700, node_color="skyblue", 
-        font_size=12, font_weight="bold", arrows=True)
-    plt.title("Tree Diagram", fontsize=14)
-    plt.show()
-
-    # 创建有向图
-    G = nx.DiGraph()
-    G.add_node("start", subset=0)
-    for i in range(2, 8):
-        G.add_node(str(i), subset=1)
-        G.add_edge("start", str(i))
-        G.add_edge(str(i), "end")
-        G.add_node("end", subset=2)
-
-    # 设置布局并绘制图形
-    pos = nx.multipartite_layout(G)
-    nx.draw_networkx(G, node_size=1000, pos=pos)
+        font_size=12, arrows=True)
+    # 绘制图形
     plt.show()
 
     return
 
 #矩形树形图
 def draw_treemap():
-    # 随机10个分类，分类名称,颜色,数值,均随机
+    # 随机10个分类,分类名称,颜色,数值,均随机
     itemNums = 10
     sizes = [random.randint(0, 1000) for i in range(itemNums)]
     labels = ''.join(random.choice(string.ascii_letters) for _ in range(itemNums))  
@@ -1048,7 +1081,8 @@ def draw_treemap():
     plt.figure(figsize=(8, 6))
     squarify.plot(sizes=sizes, label=labels, color=colors, alpha=0.7)
     plt.axis('off')
-    plt.title("Treemap with Squarify", fontsize=14)
+    set_style_and_chinese(plt)
+    plt.title("矩形树图(Tree Map)", fontsize=16)
     plt.show()
     return
 
@@ -1058,8 +1092,8 @@ def draw_relationship():
     roles = ['Alice','Bob', 'Charlie','David','Eve','Fiona','Gary','Tom','Jessy','Lucy']
     relationships = utils_random.rand_relations(roles)
 
-    # 创建无向图
-    G = nx.Graph()
+    # 创建有向图
+    G = nx.DiGraph()
 
     # 添加节点和边
     for person, related in relationships.items():
@@ -1071,9 +1105,12 @@ def draw_relationship():
     pos = nx.spring_layout(G)
 
     # 绘制图形
+    plt.figure(figsize=(10,10))
+    set_style_and_chinese(plt)
+    plt.title('人物关系图(Relationship) - 随机人物关系',fontsize=16)
     node_colors = ['red' if person == 'Alice' else 'skyblue' for person in G.nodes()]
-    nx.draw(G, pos, with_labels=True, node_color=node_colors, node_size=700, font_weight='bold', font_size=10)
-    plt.title('人物关系图')
+    nx.draw(G, pos, with_labels=True, node_color=node_colors, node_size=700, font_size=8)
+   
     plt.show()
 
     return
@@ -1094,6 +1131,7 @@ def draw_pareto():
 
     # 绘制柱状图
     fig, ax1 = plt.subplots()
+    set_style_and_chinese(plt)
 
     ax1.bar(categories, values, color='skyblue')
     ax1.set_xlabel('Categories')
@@ -1111,7 +1149,7 @@ def draw_pareto():
     ax1.grid(axis='y', linestyle='--', alpha=0.7)
 
     # 添加标题
-    plt.title('Pareto Chart')
+    plt.title('帕累托图(Pareto Chart) - 异常分类频次统计',fontsize=16)
 
     # 显示图表
     plt.show()
@@ -1127,20 +1165,21 @@ def main():
     #draw_scatter_matrix()
     #draw_hexbin()
     #draw_pie()
-    draw_multipie()
+    #draw_multipie()
     #draw_area()
     #draw_sankey()
-    #draw_map(4)
+    #draw_map()
     #draw_bubble()
     #draw_venn()
+    #draw_upset()
     #draw_wordcloud()
-    #draw_voronoi("2D")
-    #draw_pyramid("population")
+    #draw_voronoi()
+    #draw_pyramid()
     #draw_funnel()
     #draw_tree()
     #draw_treemap()
     #draw_relationship()
-    #draw_pareto()
+    draw_pareto()
     return
 
 if __name__ == '__main__':

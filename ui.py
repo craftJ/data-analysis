@@ -158,14 +158,15 @@ class DemoUI:
             ("地图", graph.draw_map),
             ("气泡图", graph.draw_bubble),
             ("韦恩图", graph.draw_venn),
-            ("集合图", graph.draw_venn),
+            ("多集合图", graph.draw_upset),
             ("词云图", graph.draw_wordcloud),
             ("维诺图", graph.draw_voronoi),
             ("金字塔图", graph.draw_pyramid),
             ("漏斗图", graph.draw_funnel),
             ("树图", graph.draw_tree),
             ("矩形树图", graph.draw_treemap),
-            ("人物关系图", graph.draw_relationship)
+            ("人物关系图", graph.draw_relationship),
+            ("帕累托图",graph.draw_pareto)
             ]
         # 说明标签
         desc_label = tb.Label(
